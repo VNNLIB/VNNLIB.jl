@@ -42,9 +42,8 @@ std::vector<const TNode*> jl_children(const TNode& node) {
 
 // for TNode pointers
 std::vector<const TNode*> jl_children_ptr(const TNode* node) {
-    std::vector<const TNode*> out;
-    node->children(out);
-    return out;
+    if (!node) return {};
+    return jl_children(*node);
 }
 
 
