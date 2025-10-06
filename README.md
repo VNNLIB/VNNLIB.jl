@@ -9,27 +9,11 @@ Julia parser for VNNLIB
 
 ### Preparation
 
-Make sure `BNFC`, `BISON` and `FLEX` are all available on your system (`sudo apt install bnfc bison flex`)
-
-All of these steps should be automated in the future:
-- Copy the code of the C++ parser into `deps/VNNLib`
-- In `deps/VNNLib/CMakeLists.txt`: Replace all occurrences of `CMAKE_SOURCE_DIR` by `CMAKE_CURRENT_SOURCE_DIR`
-- Copy `syntax.cf` from the main `VNNLIB-Standard` repository to `deps/syntax.cf`
-- Change path to that file in `deps/VNNLib/CMakeLists.txt` to `set(BNFC_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/../syntax.cf)`
-
-Then you can call
-```bash
-$ mkdir build && cd build
-$ cmake .. -DCMAKE_PREFIX_PATH=cxxwrap/prefix/path
-$ make
-```
-where `cxxwrap/prefix/path` should be replaced by the path you get using
-```julia
-julia> using CxxWrap
-julia> CxxWrap.prefix_path()
-```
+Make sure `CMake`, `git`, `BNFC`, `BISON` and `FLEX` are all available on your system.
 
 ### Usage
+
+Julia should automatically build the C++ library the first time `VNNLIB.jl` is installed.
 
 Afterwards, you should be able to run
 ```julia

@@ -2,8 +2,8 @@
 #include <jlcxx/jlcxx.hpp>
 #include <jlcxx/stl.hpp>
 #include <vector>
-#include "../deps/VNNLib/include/VNNLib.h"
-#include "../deps/VNNLib/include/TypedAbsyn.h"
+#include "../deps/VNNLIB-CPP/include/VNNLib.h"
+#include "../deps/VNNLIB-CPP/include/TypedAbsyn.h"
 
 // parse_query: returns string representation of parsed query
 //std::string jl_parse_query(const std::string& path) {
