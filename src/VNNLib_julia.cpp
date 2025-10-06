@@ -5,27 +5,18 @@
 #include "../deps/VNNLIB-CPP/include/VNNLib.h"
 #include "../deps/VNNLIB-CPP/include/TypedAbsyn.h"
 
-// parse_query: returns string representation of parsed query
-//std::string jl_parse_query(const std::string& path) {
-//    auto query_ptr = parse_query(path);
-//    if (!query_ptr) return "";
-//    return query_ptr->toString();
-//}
-
 TQuery* jl_parse_query(const std::string& path) {
     return parse_query(path).release();
 }
 
 // parse_query_str: returns string representation of parsed query from string
-std::string jl_parse_query_str(const std::string& content) {
-    auto query_ptr = parse_query_str(content);
-    if (!query_ptr) return "";
-    return query_ptr->toString();
+TQuery* jl_parse_query_str(const std::string& content) {
+    return parse_query_str(content).release();
 }
 
 // check_query: returns result string
-std::string jl_check_query(const std::string& content) {
-    return check_query(content);
+std::string jl_check_query(const std::string& path) {
+    return check_query(path);
 }
 
 // check_query_str: returns result string
@@ -84,11 +75,9 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
         })
         .method("to_string", &TNode::toString);
 
-    mod.add_type<TElementType>("TElementType", jlcxx::julia_base_type<TNode>())
-        .method("to_string", &TElementType::toString);
+    mod.add_type<TElementType>("TElementType", jlcxx::julia_base_type<TNode>());
 
-    mod.add_type<TArithExpr>("TArithExpr", jlcxx::julia_base_type<TNode>())
-        .method("to_string", &TArithExpr::toString);
+    mod.add_type<TArithExpr>("TArithExpr", jlcxx::julia_base_type<TNode>());
 
     mod.add_type<TVarExpr>("TVarExpr", jlcxx::julia_base_type<TArithExpr>());
     mod.add_type<TLiteral>("TLiteral", jlcxx::julia_base_type<TArithExpr>());
@@ -97,36 +86,24 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
     mod.add_type<TMinus>("TMinus", jlcxx::julia_base_type<TArithExpr>());
     mod.add_type<TMultiply>("TMultiply", jlcxx::julia_base_type<TArithExpr>());
 
-    mod.add_type<TBoolExpr>("TBoolExpr", jlcxx::julia_base_type<TNode>())
-        .method("to_string", &TBoolExpr::toString);
+    mod.add_type<TBoolExpr>("TBoolExpr", jlcxx::julia_base_type<TNode>());
 
     mod.add_type<TCompare>("TCompare", jlcxx::julia_base_type<TBoolExpr>());
     mod.add_type<TConnective>("TConnective", jlcxx::julia_base_type<TBoolExpr>());
 
-    mod.add_type<TAssertion>("TAssertion", jlcxx::julia_base_type<TNode>())
-        .method("to_string", &TAssertion::toString);
+    mod.add_type<TAssertion>("TAssertion", jlcxx::julia_base_type<TNode>());
 
-    mod.add_type<TInputDefinition>("TInputDefinition", jlcxx::julia_base_type<TNode>())
-        .method("to_string", &TInputDefinition::toString);
+    mod.add_type<TInputDefinition>("TInputDefinition", jlcxx::julia_base_type<TNode>());
 
-    mod.add_type<THiddenDefinition>("THiddenDefinition", jlcxx::julia_base_type<TNode>())
-        .method("to_string", &THiddenDefinition::toString);
+    mod.add_type<THiddenDefinition>("THiddenDefinition", jlcxx::julia_base_type<TNode>());
 
-    mod.add_type<TOutputDefinition>("TOutputDefinition", jlcxx::julia_base_type<TNode>())
-        .method("to_string", &TOutputDefinition::toString);
+    mod.add_type<TOutputDefinition>("TOutputDefinition", jlcxx::julia_base_type<TNode>());
 
-    mod.add_type<TNetworkDefinition>("TNetworkDefinition", jlcxx::julia_base_type<TNode>())
-        .method("to_string", &TNetworkDefinition::toString);
+    mod.add_type<TNetworkDefinition>("TNetworkDefinition", jlcxx::julia_base_type<TNode>());
 
-    mod.add_type<TVersion>("TVersion", jlcxx::julia_base_type<TNode>())
-        .method("to_string", &TVersion::toString);
+    mod.add_type<TVersion>("TVersion", jlcxx::julia_base_type<TNode>());
 
-    mod.add_type<TQuery>("TQuery", jlcxx::julia_base_type<TNode>())
-        .method("to_string", &TQuery::toString);
-
-    // Expose utility functions if needed
-    // mod.method("dtype_to_string", &dtypeToString);
-    // mod.method("shape_to_string", &shapeToString);
+    mod.add_type<TQuery>("TQuery", jlcxx::julia_base_type<TNode>());
 
     // Existing methods
     mod.method("parse_query", &jl_parse_query);
