@@ -2,16 +2,18 @@
 #include <jlcxx/jlcxx.hpp>
 #include <jlcxx/stl.hpp>
 #include <vector>
+#include <memory>
 #include "../deps/VNNLIB-CPP/include/VNNLib.h"
 #include "../deps/VNNLIB-CPP/include/TypedAbsyn.h"
 
-TQuery* jl_parse_query(const std::string& path) {
-    return parse_query(path).release();
+// Return a shared_ptr<TQuery> by converting the unique_ptr returned by parse_query
+std::shared_ptr<TQuery> jl_parse_query(const std::string& path) {
+    return parse_query(path);
 }
 
-// parse_query_str: returns string representation of parsed query from string
-TQuery* jl_parse_query_str(const std::string& content) {
-    return parse_query_str(content).release();
+// parse_query_str: return shared_ptr<TQuery> by converting the unique_ptr
+std::shared_ptr<TQuery> jl_parse_query_str(const std::string& content) {
+    return parse_query_str(content);
 }
 
 // check_query: returns result string
@@ -24,17 +26,23 @@ std::string jl_check_query_str(const std::string& content) {
     return check_query_str(content);
 }
 
-// for TNode references
-std::vector<const TNode*> jl_children(const TNode& node) {
-    std::vector<const TNode*> out;
-    node.children(out);
+// for TNode references: return vector of non-owning shared_ptr<TNode>
+std::vector<std::shared_ptr<TNode>> jl_children_sp(const TNode& node) {
+    std::vector<const TNode*> raw;
+    node.children(raw);
+    std::vector<std::shared_ptr<TNode>> out;
+    out.reserve(raw.size());
+    for (const TNode* p : raw) {
+        // create non-owning shared_ptr with no-op deleter to avoid double-free
+        out.emplace_back(std::shared_ptr<TNode>(const_cast<TNode*>(p), [](TNode*){}));
+    }
     return out;
 }
 
 // for TNode pointers
-std::vector<const TNode*> jl_children_ptr(const TNode* node) {
+std::vector<std::shared_ptr<TNode>> jl_children_ptr_sp(const TNode* node) {
     if (!node) return {};
-    return jl_children(*node);
+    return jl_children_sp(*node);
 }
 
 
@@ -68,10 +76,13 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
     // Register all types and methods from TypedAbsyn.cpp
     mod.add_type<TNode>("TNode")
         .method("children", [](const TNode& n) {
-            return jl_children(n);
+            return jl_children_sp(n);
         })
         .method("children", [](const TNode* n) {
-            return jl_children_ptr(n);
+            return jl_children_ptr_sp(n);
+        })
+        .method("children", [](const std::shared_ptr<TNode>& n) {
+            return jl_children_sp(*n);
         })
         .method("to_string", &TNode::toString);
 
