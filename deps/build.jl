@@ -45,7 +45,10 @@ end
 cd(BUILD_DIR) do
     println("Building VNNLIB-CPP in $BUILD_DIR ...")
     cxx_wrap_prefix = CxxWrap.prefix_path()
-    run(`cmake .. -DCMAKE_PREFIX_PATH=$cxx_wrap_prefix`)
+    julia_executable = joinpath(Sys.BINDIR, Base.julia_exename())
+    println("Using Julia executable: $julia_executable")
+    println("Using CxxWrap prefix: $cxx_wrap_prefix")
+    run(`cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$cxx_wrap_prefix -DJulia_EXECUTABLE=$julia_executable`)
     run(`make`)
 end
 
