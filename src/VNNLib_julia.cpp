@@ -5,6 +5,7 @@
 #include <memory>
 #include "../deps/VNNLIB-CPP/include/VNNLib.h"
 #include "../deps/VNNLIB-CPP/include/TypedAbsyn.h"
+#include "../deps/VNNLIB-CPP/include/LinearArithExpr.h"
 
 /*
 CxxWrap currently does not support class enums directly,
@@ -230,6 +231,63 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
     std::vector<const char*>({"Input","Hidden","Output","Network","Unknown"}),
     std::vector<int>({SKInput,SKHidden,SKOutput,SKNetwork,SKUnknown}));
 
+    auto linarithexprterm_type = mod.add_type<LinearArithExpr::Term>("LinearArithExprTerm")
+        .method("coeff", [](const LinearArithExpr::Term& t) {
+            return t.coeff;
+        })
+        .method("coeff", [](const LinearArithExpr::Term* t) {
+            if (!t) return 0.0;
+            return t->coeff;
+        })
+        .method("coeff", [](const std::shared_ptr<LinearArithExpr::Term>& t) {
+            if (!t) return 0.0;
+            return t->coeff;
+        })
+        .method("var_name", [](const LinearArithExpr::Term& t) {
+            return t.varName;
+        })
+        .method("var_name", [](const LinearArithExpr::Term* t) {
+            if (!t) return std::string("");
+            return t->varName;
+        })
+        .method("var_name", [](const std::shared_ptr<LinearArithExpr::Term>& t) {
+            if (!t) return std::string("");
+            return t->varName;
+        });
+        // Additional methods after instantiation of VarExpr
+
+    mod.add_type<LinearArithExpr>("LinearArithExpr")
+        .method("to_string", [](const LinearArithExpr& n) {
+            return n.toString();
+        })
+        .method("to_string", [](const LinearArithExpr* n) {
+            return n ? n->toString() : std::string("");
+        })
+        .method("to_string", [](const std::shared_ptr<LinearArithExpr>& n) {
+            return n ? n->toString() : std::string("");
+        })
+        .method("terms", [](const LinearArithExpr& expr) {
+            return expr.getTerms();
+        })
+        .method("terms", [](const LinearArithExpr* expr) {
+            if (!expr) return std::vector<LinearArithExpr::Term>{};
+            return expr->getTerms();
+        })
+        .method("terms", [](const std::shared_ptr<LinearArithExpr>& expr) {
+            if (!expr) return std::vector<LinearArithExpr::Term>{};
+            return expr->getTerms();
+        })
+        .method("constant", [](const LinearArithExpr& expr) {
+            return expr.getConstant();
+        })
+        .method("constant", [](const LinearArithExpr* expr) {
+            if (!expr) return 0.0;
+            return expr->getConstant();
+        })
+        .method("constant", [](const std::shared_ptr<LinearArithExpr>& expr){
+            if (!expr) return 0.0;
+            return expr->getConstant();
+        });
     mod.add_type<SymbolInfo>("SymbolInfo");
 
     // Register all types and methods from TypedAbsyn.cpp
@@ -264,7 +322,22 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
         })
         .method("dtype", [](const std::shared_ptr<TArithExpr>& expr) {
             return expr ? to_julia_type_enum(expr->dtype) : DUnknown;
+        })
+        .method("linearize", [](const TArithExpr& expr) {
+            auto lin_expr = linearize(&expr);
+            return lin_expr.release();
+        })
+        .method("linearize", [](const TArithExpr* expr) {
+            if (!expr) return static_cast<LinearArithExpr*>(nullptr);
+            auto lin_expr = linearize(expr);
+            return lin_expr.release();
+        })
+        .method("linearize", [](const std::shared_ptr<TArithExpr>& expr) {
+            if (!expr) return static_cast<LinearArithExpr*>(nullptr);
+            auto lin_expr = linearize(expr.get());
+            return lin_expr.release();
         });
+
 
     mod.add_type<TVarExpr>("TVarExpr", jlcxx::julia_base_type<TArithExpr>());
     mod.add_type<TLiteral>("TLiteral", jlcxx::julia_base_type<TArithExpr>());
@@ -290,17 +363,57 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
 
     mod.add_type<TAssertion>("TAssertion", jlcxx::julia_base_type<TNode>());
 
-    mod.add_type<TInputDefinition>("TInputDefinition", jlcxx::julia_base_type<TNode>());
+    mod.add_type<TInputDefinition>("TInputDefinition", jlcxx::julia_base_type<TNode>())
+        .method("dtype", [](const TInputDefinition& def) {
+            return to_julia_type_enum(def.symbol->dtype);
+        })
+        .method("dtype", [](const TInputDefinition* def) {
+            return def ? to_julia_type_enum(def->symbol->dtype) : DUnknown;
+        })
+        .method("dtype", [](const std::shared_ptr<TInputDefinition>& def) {
+            return def ? to_julia_type_enum(def->symbol->dtype) : DUnknown;
+        });
 
-    mod.add_type<THiddenDefinition>("THiddenDefinition", jlcxx::julia_base_type<TNode>());
+    mod.add_type<THiddenDefinition>("THiddenDefinition", jlcxx::julia_base_type<TNode>())
+        .method("dtype", [](const THiddenDefinition& def) {
+            return to_julia_type_enum(def.symbol->dtype);
+        })
+        .method("dtype", [](const THiddenDefinition* def) {
+            return def ? to_julia_type_enum(def->symbol->dtype) : DUnknown;
+        })
+        .method("dtype", [](const std::shared_ptr<THiddenDefinition>& def) {
+            return def ? to_julia_type_enum(def->symbol->dtype) : DUnknown;
+        });
 
-    mod.add_type<TOutputDefinition>("TOutputDefinition", jlcxx::julia_base_type<TNode>());
+    mod.add_type<TOutputDefinition>("TOutputDefinition", jlcxx::julia_base_type<TNode>())
+        .method("dtype", [](const TOutputDefinition& def) {
+            return to_julia_type_enum(def.symbol->dtype);
+        })
+        .method("dtype", [](const TOutputDefinition* def) {
+            return def ? to_julia_type_enum(def->symbol->dtype) : DUnknown;
+        })
+        .method("dtype", [](const std::shared_ptr<TOutputDefinition>& def) {
+            return def ? to_julia_type_enum(def->symbol->dtype) : DUnknown;
+        });
 
     mod.add_type<TNetworkDefinition>("TNetworkDefinition", jlcxx::julia_base_type<TNode>());
 
     mod.add_type<TVersion>("TVersion", jlcxx::julia_base_type<TNode>());
 
     mod.add_type<TQuery>("TQuery", jlcxx::julia_base_type<TNode>());
+
+    linarithexprterm_type
+        .method("var", [](const LinearArithExpr::Term& t) {
+            return t.var;
+        })
+        .method("var", [](const LinearArithExpr::Term* t) {
+            if (!t) return static_cast<const TVarExpr*>(nullptr);
+            return t->var;
+        })
+        .method("var", [](const std::shared_ptr<LinearArithExpr::Term>& t) {
+            if (!t) return static_cast<const TVarExpr*>(nullptr);
+            return t->var;
+        });
 
     // Existing methods
     mod.method("parse_query", &jl_parse_query);

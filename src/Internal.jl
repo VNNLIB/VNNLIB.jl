@@ -28,7 +28,7 @@ export SymbolInfo
 export TNode, to_string
 export TElementType
 
-export TArithExpr
+export TArithExpr, dtype, linearize
 
 export TVarExpr
 
@@ -66,5 +66,8 @@ export TNetworkDefinition
 export TVersion
 
 export TQuery
+
+export LinearArithExpr, terms, constant
+export LinearArithExprTerm, coeff, var, var_name
 
 end
