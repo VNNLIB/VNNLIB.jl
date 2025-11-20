@@ -2,7 +2,12 @@
 using VNNLIB 
 
 function walk(n; d=0)
-    println(" "^d * "$(VNNLIB._reftype(n)): $(n)")
+    if VNNLIB._reftype(n) <: VNNLIB.VNNLIBCore.TArithExpr
+        t = " (dtype: $(VNNLIB.VNNLIBCore.dtype(n)))"
+    else 
+        t = ""
+    end
+    println(" "^d * "$(VNNLIB._reftype(n)): $(n)$t")
     for c in VNNLIB.children(n)
         walk(c, d=d+1)
     end
