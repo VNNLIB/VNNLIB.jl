@@ -7,7 +7,7 @@ include("Internal.jl")
 using .VNNLIBCore
 
 export parse_query, parse_query_str, check_query, check_query_str
-export children
+export children, args, expr, lhs, rhs, to_dnf
 export dtype
 
 export SymbolInfo
@@ -47,14 +47,19 @@ export TInputDefinition
 export THiddenDefinition
 export TOutputDefinition
 
-export TNetworkDefinition
+export TNetworkDefinition, net_isometric_to, net_equal_to, net_inputs, net_outputs, net_hidden
 
 export TVersion
 
-export TQuery
+export TQuery, networks, assertions
 
 export LinearArithExpr, terms, constant
 export LinearArithExprTerm, coeff, var, var_name
+
+export Polytope, coeff_matrix #, rhs
+export SpecCase, input_box, output_constraints
+
+export transform_to_compat
 
 include("Util.jl")
 
@@ -117,7 +122,7 @@ CxxWrap.@cxxdereference function expr(assertion::TAssertion)
     return specialize_node(VNNLIBCore.expr(assertion))
 end
 
-CxxWrap.@cxxdereference function to_dnf(expr::TBoolExpr)
+CxxWrap.@cxxdereference function to_dnf(expr::TBoolExpr) :: Vector{Vector{Union{CxxWrap.ConstCxxPtr{TGreaterThan},CxxWrap.ConstCxxPtr{TLessThan},CxxWrap.ConstCxxPtr{TGreaterEqual},CxxWrap.ConstCxxPtr{TLessEqual},CxxWrap.ConstCxxPtr{TEqual},CxxWrap.ConstCxxPtr{TNotEqual}}}}
     return map(x->specialize_node.(x), VNNLIBCore.to_dnf(expr))
 end
 
