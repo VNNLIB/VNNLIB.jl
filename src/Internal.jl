@@ -30,14 +30,14 @@ export TElementType
 
 export TArithExpr, dtype, linearize
 
-export TVarExpr
+export TVarExpr, name, onnx_name, shape, kind, network_name, indices, line
 
-export TLiteral
-export TFloat
+export TLiteral, lexeme, line
+export TFloat, value
 export TInt
 
-export TNegate
-export TPlus
+export TNegate, expr
+export TPlus, args
 export TMinus
 export TMultiply
 
@@ -61,13 +61,18 @@ export TInputDefinition
 export THiddenDefinition
 export TOutputDefinition
 
-export TNetworkDefinition
+export TNetworkDefinition, net_isometric_to, net_equal_to, net_inputs, net_outputs, net_hidden
 
-export TVersion
+export TVersion, version_major, version_minor
 
-export TQuery
+export TQuery, networks, assertions
 
 export LinearArithExpr, terms, constant
 export LinearArithExprTerm, coeff, var, var_name
+
+export Polytope, coeff_matrix #, rhs
+export SpecCase, input_box, output_constraints
+
+export transform_to_compat
 
 end

@@ -6,6 +6,8 @@
 #include "../deps/VNNLIB-CPP/include/VNNLib.h"
 #include "../deps/VNNLIB-CPP/include/TypedAbsyn.h"
 #include "../deps/VNNLIB-CPP/include/LinearArithExpr.h"
+#include "../deps/VNNLIB-CPP/include/DNFConverter.h"
+#include "../deps/VNNLIB-CPP/include/CompatTransformer.h"
 
 /*
 CxxWrap currently does not support class enums directly,
@@ -339,31 +341,358 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
         });
 
 
-    mod.add_type<TVarExpr>("TVarExpr", jlcxx::julia_base_type<TArithExpr>());
-    mod.add_type<TLiteral>("TLiteral", jlcxx::julia_base_type<TArithExpr>());
-    mod.add_type<TFloat>("TFloat", jlcxx::julia_base_type<TLiteral>());
-    mod.add_type<TInt>("TInt", jlcxx::julia_base_type<TLiteral>());
-    mod.add_type<TNegate>("TNegate", jlcxx::julia_base_type<TArithExpr>());
-    mod.add_type<TPlus>("TPlus", jlcxx::julia_base_type<TArithExpr>());
-    mod.add_type<TMinus>("TMinus", jlcxx::julia_base_type<TArithExpr>());
-    mod.add_type<TMultiply>("TMultiply", jlcxx::julia_base_type<TArithExpr>());
+    mod.add_type<TVarExpr>("TVarExpr", jlcxx::julia_base_type<TArithExpr>())
+        .method("name", [](const TVarExpr& var) {
+            if (var.symbol) {
+                return var.symbol->name;
+            } else {
+                return std::string("");
+            }
+        })
+        .method("name", [](const TVarExpr* var) {
+            if (!var || !var->symbol) return std::string("");
+            return var->symbol->name;
+        })
+        .method("name", [](const std::shared_ptr<TVarExpr>& var) {
+            if (!var || !var->symbol) return std::string("");
+            return var->symbol->name;
+        })
+        .method("onnx_name", [](const TVarExpr& var) {
+            if (var.symbol) {
+                return var.symbol->onnxName;
+            } else {
+                return std::string("");
+            }
+        })
+        .method("onnx_name", [](const TVarExpr* var) {
+            if (!var || !var->symbol) return std::string("");
+            return var->symbol->onnxName;
+        })
+        .method("onnx_name", [](const std::shared_ptr<TVarExpr>& var) {
+            if (!var || !var->symbol) return std::string("");
+            return var->symbol->onnxName;
+        })
+        .method("dtype", [](const TVarExpr& var) {
+            if (var.symbol) {
+                return to_julia_type_enum(var.symbol->dtype);
+            } else {
+                return DUnknown;
+            }
+        })
+        .method("dtype", [](const TVarExpr* var) {
+            if (!var || !var->symbol) return DUnknown;
+            return to_julia_type_enum(var->symbol->dtype);
+        })
+        .method("dtype", [](const std::shared_ptr<TVarExpr>& var) {
+            if (!var || !var->symbol) return DUnknown;
+            return to_julia_type_enum(var->symbol->dtype);
+        })
+        .method("shape", [](const TVarExpr& var) {
+            if (var.symbol) {
+                return var.symbol->shape;
+            } else {
+                return std::vector<int64_t>{};
+            }
+        })
+        .method("shape", [](const TVarExpr* var) {
+            if (!var || !var->symbol) return std::vector<int64_t>{};
+            return var->symbol->shape;
+        })
+        .method("shape", [](const std::shared_ptr<TVarExpr>& var) {
+            if (!var || !var->symbol) return std::vector<int64_t>{};
+            return var->symbol->shape;
+        })
+        .method("kind", [](const TVarExpr& var) {
+            if (var.symbol) {
+                return to_julia_symbol_kind(var.symbol->kind);
+            } else {
+                return SKUnknown;
+            }
+        })
+        .method("kind", [](const TVarExpr* var) {
+            if (!var || !var->symbol) return SKUnknown;
+            return to_julia_symbol_kind(var->symbol->kind);
+        })
+        .method("kind", [](const std::shared_ptr<TVarExpr>& var) {
+            if (!var || !var->symbol) return SKUnknown;
+            return to_julia_symbol_kind(var->symbol->kind);
+        })
+        .method("network_name", [](const TVarExpr& var) {
+            if (var.symbol) {
+                return var.symbol->networkName;
+            } else {
+                return std::string("");
+            }
+        })
+        .method("network_name", [](const TVarExpr* var) {
+            if (!var || !var->symbol) return std::string("");
+            return var->symbol->networkName;
+        })
+        .method("network_name", [](const std::shared_ptr<TVarExpr>& var) {
+            if (!var || !var->symbol) return std::string("");
+            return var->symbol->networkName;
+        })
+        .method("indices", [](const TVarExpr& var) {
+            return var.indices;
+        })
+        .method("indices", [](const TVarExpr* var) {
+            if (!var) return std::vector<int64_t>{};
+            return var->indices;
+        })
+        .method("indices", [](const std::shared_ptr<TVarExpr>& var) {
+            if (!var) return std::vector<int64_t>{};
+            return var->indices;
+        })
+        .method("line", [](const TVarExpr& var) {
+            return var.line;
+        })
+        .method("line", [](const TVarExpr* var) {
+            if (!var) return -1;
+            return var->line;
+        })
+        .method("line", [](const std::shared_ptr<TVarExpr>& var) {
+            if (!var) return -1;
+            return var->line;
+        });
+    mod.add_type<TLiteral>("TLiteral", jlcxx::julia_base_type<TArithExpr>())
+        .method("lexeme", [](const TLiteral& lit) {
+            return lit.lexeme;
+        })
+        .method("lexeme", [](const TLiteral* lit) {
+            if (!lit) return std::string("");
+            return lit->lexeme;
+        })
+        .method("lexeme", [](const std::shared_ptr<TLiteral>& lit) {
+            if (!lit) return std::string("");
+            return lit->lexeme;
+        })
+        .method("line", [](const TLiteral& lit) {
+            return lit.line;
+        })
+        .method("line", [](const TLiteral* lit) {
+            if (!lit) return -1;
+            return lit->line;
+        })
+        .method("line", [](const std::shared_ptr<TLiteral>& lit) {
+            if (!lit) return -1;
+            return lit->line;
+        });
+    mod.add_type<TFloat>("TFloat", jlcxx::julia_base_type<TLiteral>())
+        .method("value", [](const TFloat& f) {
+            return f.value;
+        })
+        .method("value", [](const TFloat* f) {
+            if (!f) return std::nan("1");
+            return f->value;
+        })
+        .method("value", [](const std::shared_ptr<TFloat>& f) {
+            if (!f) return std::nan("1");
+            return f->value;
+        });
+    mod.add_type<TInt>("TInt", jlcxx::julia_base_type<TLiteral>())
+        .method("value", [](const TInt& i) {
+            return i.value;
+        })
+        .method("value", [](const TInt* i) {
+            if (!i) return int64_t(0);
+            return i->value;
+        })
+        .method("value", [](const std::shared_ptr<TInt>& i) {
+            if (!i) return int64_t(0);
+            return i->value;
+        });
+    mod.add_type<TNegate>("TNegate", jlcxx::julia_base_type<TArithExpr>())
+        .method("expr", [](const TNegate& n) {
+            return n.expr.get();
+        })
+        .method("expr", [](const TNegate* n) {
+            if (!n) return static_cast<TArithExpr*>(nullptr);
+            return n->expr.get();
+        })
+        .method("expr", [](const std::shared_ptr<TNegate>& n) {
+            if (!n) return static_cast<TArithExpr*>(nullptr);
+            return n->expr.get();
+        });
+    mod.add_type<TPlus>("TPlus", jlcxx::julia_base_type<TArithExpr>())
+        .method("args", [](const TPlus& p) {
+            std::vector<TArithExpr*> out;
+            out.reserve(p.args.size());
+            for (size_t i = 0; i < p.args.size(); ++i) {
+                out.push_back(p.args[i].get());
+            }
+            return out;
+        })
+        .method("args", [](const TPlus* p) {
+            if (!p) return std::vector<TArithExpr*>{};
+            std::vector<TArithExpr*> out;
+            out.reserve(p->args.size());
+            for (size_t i = 0; i < p->args.size(); ++i) {
+                out.push_back(p->args[i].get());
+            }
+            return out;
+        })
+        .method("args", [](const std::shared_ptr<TPlus>& p) {
+            if (!p) return std::vector<TArithExpr*>{};
+            std::vector<TArithExpr*> out;
+            out.reserve(p->args.size());
+            for (size_t i = 0; i < p->args.size(); ++i) {
+                out.push_back(p->args[i].get());
+            }
+            return out;
+        });
+    mod.add_type<TMinus>("TMinus", jlcxx::julia_base_type<TArithExpr>())
+        .method("args", [](const TMinus& p) {
+            std::vector<TArithExpr*> out;
+            out.reserve(p.rest.size()+1);
+            out.push_back(p.head.get());
+            for (size_t i = 0; i < p.rest.size(); ++i) {
+                out.push_back(p.rest[i].get());
+            }
+            return out;
+        })
+        .method("args", [](const TMinus* p) {
+            if (!p) return std::vector<TArithExpr*>{};
+            std::vector<TArithExpr*> out;
+            out.reserve(p->rest.size()+1);
+            out.push_back(p->head.get());
+            for (size_t i = 0; i < p->rest.size(); ++i) {
+                out.push_back(p->rest[i].get());
+            }
+            return out;
+        })
+        .method("args", [](const std::shared_ptr<TMinus>& p) {
+            if (!p) return std::vector<TArithExpr*>{};
+            std::vector<TArithExpr*> out;
+            out.reserve(p->rest.size()+1);
+            out.push_back(p->head.get());
+            for (size_t i = 0; i < p->rest.size(); ++i) {
+                out.push_back(p->rest[i].get());
+            }
+            return out;
+        });
+    mod.add_type<TMultiply>("TMultiply", jlcxx::julia_base_type<TArithExpr>())
+        .method("args", [](const TMultiply& p) {
+            std::vector<TArithExpr*> out;
+            out.reserve(p.args.size());
+            for (size_t i = 0; i < p.args.size(); ++i) {
+                out.push_back(p.args[i].get());
+            }
+            return out;
+        })
+        .method("args", [](const TMultiply* p) {
+            if (!p) return std::vector<TArithExpr*>{};
+            std::vector<TArithExpr*> out;
+            out.reserve(p->args.size());
+            for (size_t i = 0; i < p->args.size(); ++i) {
+                out.push_back(p->args[i].get());
+            }
+            return out;
+        })
+        .method("args", [](const std::shared_ptr<TMultiply>& p) {
+            if (!p) return std::vector<TArithExpr*>{};
+            std::vector<TArithExpr*> out;
+            out.reserve(p->args.size());
+            for (size_t i = 0; i < p->args.size(); ++i) {
+                out.push_back(p->args[i].get());
+            }
+            return out;
+        });
 
-    mod.add_type<TBoolExpr>("TBoolExpr", jlcxx::julia_base_type<TNode>());
+    auto bool_expr_type = mod.add_type<TBoolExpr>("TBoolExpr", jlcxx::julia_base_type<TNode>());
+    // TODO: dnf_form
 
-    mod.add_type<TCompare>("TCompare", jlcxx::julia_base_type<TBoolExpr>());
+    mod.add_type<TCompare>("TCompare", jlcxx::julia_base_type<TBoolExpr>())
+        .method("lhs", [](const TCompare& c) {
+            return c.lhs.get();
+        })
+        .method("lhs", [](const TCompare* c) {
+            if (!c) return static_cast<TArithExpr*>(nullptr);
+            return c->lhs.get();
+        })
+        .method("lhs", [](const std::shared_ptr<TCompare>& c) {
+            if (!c) return static_cast<TArithExpr*>(nullptr);
+            return c->lhs.get();
+        })
+        .method("rhs", [](const TCompare& c) {
+            return c.rhs.get();
+        })
+        .method("rhs", [](const TCompare* c) {
+            if (!c) return static_cast<TArithExpr*>(nullptr);
+            return c->rhs.get();
+        })
+        .method("rhs", [](const std::shared_ptr<TCompare>& c) {
+            if (!c) return static_cast<TArithExpr*>(nullptr);
+            return c->rhs.get();
+        });
     mod.add_type<TGreaterThan>("TGreaterThan", jlcxx::julia_base_type<TCompare>());
     mod.add_type<TLessThan>("TLessThan", jlcxx::julia_base_type<TCompare>());
     mod.add_type<TGreaterEqual>("TGreaterEqual", jlcxx::julia_base_type<TCompare>());
     mod.add_type<TLessEqual>("TLessEqual", jlcxx::julia_base_type<TCompare>());
     mod.add_type<TEqual>("TEqual", jlcxx::julia_base_type<TCompare>());
     mod.add_type<TNotEqual>("TNotEqual", jlcxx::julia_base_type<TCompare>());
-    mod.add_type<TConnective>("TConnective", jlcxx::julia_base_type<TBoolExpr>());
+
+    mod.add_type<TConnective>("TConnective", jlcxx::julia_base_type<TBoolExpr>())
+        .method("args", [](const TConnective& c) {
+            std::vector<TBoolExpr*> out;
+            out.reserve(c.args.size());
+            for (size_t i = 0; i < c.args.size(); ++i) {
+                out.push_back(c.args[i].get());
+            }
+            return out;
+        })
+        .method("args", [](const TConnective* c) {
+            if (!c) return std::vector<TBoolExpr*>{};
+            std::vector<TBoolExpr*> out;
+            out.reserve(c->args.size());
+            for (size_t i = 0; i < c->args.size(); ++i) {
+                out.push_back(c->args[i].get());
+            }
+            return out;
+        })
+        .method("args", [](const std::shared_ptr<TConnective>& c) {
+            if (!c) return std::vector<TBoolExpr*>{};
+            std::vector<TBoolExpr*> out;
+            out.reserve(c->args.size());
+            for (size_t i = 0; i < c->args.size(); ++i) {
+                out.push_back(c->args[i].get());
+            }
+            return out;
+        });
     mod.add_type<TAnd>("TAnd", jlcxx::julia_base_type<TConnective>());
     mod.add_type<TOr>("TOr", jlcxx::julia_base_type<TConnective>());
 
-    mod.add_type<TAssertion>("TAssertion", jlcxx::julia_base_type<TNode>());
+    mod.add_type<TAssertion>("TAssertion", jlcxx::julia_base_type<TNode>())
+        .method("expr", [](const TAssertion& a) {
+            return a.cond.get();
+        })
+        .method("expr", [](const TAssertion* a) {
+            if (!a) return static_cast<TBoolExpr*>(nullptr);
+            return a->cond.get();
+        })
+        .method("expr", [](const std::shared_ptr<TAssertion>& a) {
+            if (!a) return static_cast<TBoolExpr*>(nullptr);
+            return a->cond.get();
+        });
 
     mod.add_type<TInputDefinition>("TInputDefinition", jlcxx::julia_base_type<TNode>())
+        .method("name", [](const TInputDefinition& def) {
+            return def.symbol->name;
+        })
+        .method("name", [](const TInputDefinition* def) {
+            return def ? def->symbol->name : std::string("");
+        })
+        .method("name", [](const std::shared_ptr<TInputDefinition>& def) {
+            return def ? def->symbol->name : std::string("");
+        })
+        .method("onnx_name", [](const TInputDefinition& def) {
+            return def.symbol->onnxName;
+        })
+        .method("onnx_name", [](const TInputDefinition* def) {
+            return def ? def->symbol->onnxName : std::string("");
+        })
+        .method("onnx_name", [](const std::shared_ptr<TInputDefinition>& def) {
+            return def ? def->symbol->onnxName : std::string("");
+        })
         .method("dtype", [](const TInputDefinition& def) {
             return to_julia_type_enum(def.symbol->dtype);
         })
@@ -372,9 +701,54 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
         })
         .method("dtype", [](const std::shared_ptr<TInputDefinition>& def) {
             return def ? to_julia_type_enum(def->symbol->dtype) : DUnknown;
+        })
+        .method("shape", [](const TInputDefinition& def) {
+            return def.symbol->shape;
+        })
+        .method("shape", [](const TInputDefinition* def) {
+            return def ? def->symbol->shape : std::vector<int64_t>{};
+        })
+        .method("shape", [](const std::shared_ptr<TInputDefinition>& def) {
+            return def ? def->symbol->shape : std::vector<int64_t>{};
+        })
+        .method("kind", [](const TInputDefinition& def) {
+            return to_julia_symbol_kind(def.symbol->kind);
+        })
+        .method("kind", [](const TInputDefinition* def) {
+            return def ? to_julia_symbol_kind(def->symbol->kind) : SKUnknown;
+        })
+        .method("kind", [](const std::shared_ptr<TInputDefinition>& def) {
+            return def ? to_julia_symbol_kind(def->symbol->kind) : SKUnknown;
+        })
+        .method("network_name", [](const TInputDefinition& def) {
+            return def.symbol->networkName;
+        })
+        .method("network_name", [](const TInputDefinition* def) {
+            return def ? def->symbol->networkName : std::string("");
+        })
+        .method("network_name", [](const std::shared_ptr<TInputDefinition>& def) {
+            return def ? def->symbol->networkName : std::string("");
         });
 
     mod.add_type<THiddenDefinition>("THiddenDefinition", jlcxx::julia_base_type<TNode>())
+        .method("name", [](const THiddenDefinition& def) {
+            return def.symbol->name;
+        })
+        .method("name", [](const THiddenDefinition* def) {
+            return def ? def->symbol->name : std::string("");
+        })
+        .method("name", [](const std::shared_ptr<THiddenDefinition>& def) {
+            return def ? def->symbol->name : std::string("");
+        })
+        .method("onnx_name", [](const THiddenDefinition& def) {
+            return def.symbol->onnxName;
+        })
+        .method("onnx_name", [](const THiddenDefinition* def) {
+            return def ? def->symbol->onnxName : std::string("");
+        })
+        .method("onnx_name", [](const std::shared_ptr<THiddenDefinition>& def) {
+            return def ? def->symbol->onnxName : std::string("");
+        })
         .method("dtype", [](const THiddenDefinition& def) {
             return to_julia_type_enum(def.symbol->dtype);
         })
@@ -383,9 +757,54 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
         })
         .method("dtype", [](const std::shared_ptr<THiddenDefinition>& def) {
             return def ? to_julia_type_enum(def->symbol->dtype) : DUnknown;
+        })
+        .method("shape", [](const THiddenDefinition& def) {
+            return def.symbol->shape;
+        })
+        .method("shape", [](const THiddenDefinition* def) {
+            return def ? def->symbol->shape : std::vector<int64_t>{};
+        })
+        .method("shape", [](const std::shared_ptr<THiddenDefinition>& def) {
+            return def ? def->symbol->shape : std::vector<int64_t>{};
+        })
+        .method("kind", [](const THiddenDefinition& def) {
+            return to_julia_symbol_kind(def.symbol->kind);
+        })
+        .method("kind", [](const THiddenDefinition* def) {
+            return def ? to_julia_symbol_kind(def->symbol->kind) : SKUnknown;
+        })
+        .method("kind", [](const std::shared_ptr<THiddenDefinition>& def) {
+            return def ? to_julia_symbol_kind(def->symbol->kind) : SKUnknown;
+        })
+        .method("network_name", [](const THiddenDefinition& def) {
+            return def.symbol->networkName;
+        })
+        .method("network_name", [](const THiddenDefinition* def) {
+            return def ? def->symbol->networkName : std::string("");
+        })
+        .method("network_name", [](const std::shared_ptr<THiddenDefinition>& def) {
+            return def ? def->symbol->networkName : std::string("");
         });
 
     mod.add_type<TOutputDefinition>("TOutputDefinition", jlcxx::julia_base_type<TNode>())
+        .method("name", [](const TOutputDefinition& def) {
+            return def.symbol->name;
+        })
+        .method("name", [](const TOutputDefinition* def) {
+            return def ? def->symbol->name : std::string("");
+        })
+        .method("name", [](const std::shared_ptr<TOutputDefinition>& def) {
+            return def ? def->symbol->name : std::string("");
+        })
+        .method("onnx_name", [](const TOutputDefinition& def) {
+            return def.symbol->onnxName;
+        })
+        .method("onnx_name", [](const TOutputDefinition* def) {
+            return def ? def->symbol->onnxName : std::string("");
+        })
+        .method("onnx_name", [](const std::shared_ptr<TOutputDefinition>& def) {
+            return def ? def->symbol->onnxName : std::string("");
+        })
         .method("dtype", [](const TOutputDefinition& def) {
             return to_julia_type_enum(def.symbol->dtype);
         })
@@ -394,13 +813,221 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
         })
         .method("dtype", [](const std::shared_ptr<TOutputDefinition>& def) {
             return def ? to_julia_type_enum(def->symbol->dtype) : DUnknown;
+        })
+        .method("shape", [](const TOutputDefinition& def) {
+            return def.symbol->shape;
+        })
+        .method("shape", [](const TOutputDefinition* def) {
+            return def ? def->symbol->shape : std::vector<int64_t>{};
+        })
+        .method("shape", [](const std::shared_ptr<TOutputDefinition>& def) {
+            return def ? def->symbol->shape : std::vector<int64_t>{};
+        })
+        .method("kind", [](const TOutputDefinition& def) {
+            return to_julia_symbol_kind(def.symbol->kind);
+        })
+        .method("kind", [](const TOutputDefinition* def) {
+            return def ? to_julia_symbol_kind(def->symbol->kind) : SKUnknown;
+        })
+        .method("kind", [](const std::shared_ptr<TOutputDefinition>& def) {
+            return def ? to_julia_symbol_kind(def->symbol->kind) : SKUnknown;
+        })
+        .method("network_name", [](const TOutputDefinition& def) {
+            return def.symbol->networkName;
+        })
+        .method("network_name", [](const TOutputDefinition* def) {
+            return def ? def->symbol->networkName : std::string("");
+        })
+        .method("network_name", [](const std::shared_ptr<TOutputDefinition>& def) {
+            return def ? def->symbol->networkName : std::string("");
         });
 
-    mod.add_type<TNetworkDefinition>("TNetworkDefinition", jlcxx::julia_base_type<TNode>());
+    mod.add_type<TNetworkDefinition>("TNetworkDefinition", jlcxx::julia_base_type<TNode>())
+        .method("name", [](const TNetworkDefinition& net) {
+            return net.networkName;
+        })
+        .method("name", [](const TNetworkDefinition* net) {
+            return net ? net->networkName : std::string("");
+        })
+        .method("name", [](const std::shared_ptr<TNetworkDefinition>& net) {
+            return net ? net->networkName : std::string("");
+        })
+        .method("net_isometric_to", [](const TNetworkDefinition& net) {
+            return net.isometricTo;
+        })
+        .method("net_isometric_to", [](const TNetworkDefinition* net) {
+            return net ? net->isometricTo : std::string("");
+        })
+        .method("net_isometric_to", [](const std::shared_ptr<TNetworkDefinition>& net) {
+            return net ? net->isometricTo : std::string("");
+        })
+        .method("net_equal_to", [](const TNetworkDefinition& net) {
+            return net.equalTo;
+        })
+        .method("net_equal_to", [](const TNetworkDefinition* net) {
+            return net ? net->equalTo : std::string("");
+        })
+        .method("net_equal_to", [](const std::shared_ptr<TNetworkDefinition>& net) {
+            return net ? net->equalTo : std::string("");
+        })
+        .method("net_inputs", [](const TNetworkDefinition& net) {
+            std::vector<const TInputDefinition*> out;
+            out.reserve(net.inputs.size());
+            for (const auto& inp : net.inputs) {
+                out.push_back(inp.get());
+            }
+            return out;
+        })
+        .method("net_inputs", [](const TNetworkDefinition* net) {
+            if (!net) return std::vector<const TInputDefinition*>{};
+            std::vector<const TInputDefinition*> out;
+            out.reserve(net->inputs.size());
+            for (const auto& inp : net->inputs) {
+                out.push_back(inp.get());
+            }
+            return out;
+        })
+        .method("net_inputs", [](const std::shared_ptr<TNetworkDefinition>& net) {
+            if (!net) return std::vector<const TInputDefinition*>{};
+            std::vector<const TInputDefinition*> out;
+            out.reserve(net->inputs.size());
+            for (const auto& inp : net->inputs) {
+                out.push_back(inp.get());
+            }
+            return out;
+        })
+        .method("net_outputs", [](const TNetworkDefinition& net) {
+            std::vector<const TOutputDefinition*> out;
+            out.reserve(net.outputs.size());
+            for (const auto& outp : net.outputs) {
+                out.push_back(outp.get());
+            }
+            return out;
+        })
+        .method("net_outputs", [](const TNetworkDefinition* net) {
+            if (!net) return std::vector<const TOutputDefinition*>{};
+            std::vector<const TOutputDefinition*> out;
+            out.reserve(net->outputs.size());
+            for (const auto& outp : net->outputs) {
+                out.push_back(outp.get());
+            }
+            return out;
+        })
+        .method("net_outputs", [](const std::shared_ptr<TNetworkDefinition>& net) {
+            if (!net) return std::vector<const TOutputDefinition*>{};
+            std::vector<const TOutputDefinition*> out;
+            out.reserve(net->outputs.size());
+            for (const auto& outp : net->outputs) {
+                out.push_back(outp.get());
+            }
+            return out;
+        })
+        .method("net_hidden", [](const TNetworkDefinition& net) {
+            std::vector<const THiddenDefinition*> out;
+            out.reserve(net.hidden.size());
+            for (const auto& hid : net.hidden) {
+                out.push_back(hid.get());
+            }
+            return out;
+        })
+        .method("net_hidden", [](const TNetworkDefinition* net) {
+            if (!net) return std::vector<const THiddenDefinition*>{};
+            std::vector<const THiddenDefinition*> out;
+            out.reserve(net->hidden.size());
+            for (const auto& hid : net->hidden) {
+                out.push_back(hid.get());
+            }
+            return out;
+        })
+        .method("net_hidden", [](const std::shared_ptr<TNetworkDefinition>& net) {
+            if (!net) return std::vector<const THiddenDefinition*>{};
+            std::vector<const THiddenDefinition*> out;
+            out.reserve(net->hidden.size());
+            for (const auto& hid : net->hidden) {
+                out.push_back(hid.get());
+            }
+            return out;
+        });
 
-    mod.add_type<TVersion>("TVersion", jlcxx::julia_base_type<TNode>());
+    mod.add_type<TVersion>("TVersion", jlcxx::julia_base_type<TNode>())
+        .method("version_major", [](const TVersion& v) {
+            return v.major;
+        })
+        .method("version_major", [](const TVersion* v) {
+            if (!v) return 0;
+            return v->major;
+        })
+        .method("version_major", [](const std::shared_ptr<TVersion>& v) {
+            if (!v) return 0;
+            return v->major;
+        })
+        .method("version_minor", [](const TVersion& v) {
+            return v.minor;
+        })
+        .method("version_minor", [](const TVersion* v) {
+            if (!v) return 0;
+            return v->minor;
+        })
+        .method("version_minor", [](const std::shared_ptr<TVersion>& v) {
+            if (!v) return 0;
+            return v->minor;
+        });
 
-    mod.add_type<TQuery>("TQuery", jlcxx::julia_base_type<TNode>());
+    mod.add_type<TQuery>("TQuery", jlcxx::julia_base_type<TNode>())
+        .method("networks", [](const TQuery& q) {
+            std::vector<const TNetworkDefinition*> out;
+            out.reserve(q.networks.size());
+            for (const auto& net : q.networks) {
+                out.push_back(net.get());
+            }
+            return out;
+        })
+        .method("networks", [](const TQuery* q) {
+            if (!q) return std::vector<const TNetworkDefinition*>{};
+            std::vector<const TNetworkDefinition*> out;
+            out.reserve(q->networks.size());
+            for (const auto& net : q->networks) {
+                out.push_back(net.get());
+            }
+            return out;
+        })
+        .method("networks", [](const std::shared_ptr<TQuery>& q) {
+            if (!q) return std::vector<const TNetworkDefinition*>{};
+            std::vector<const TNetworkDefinition*> out;
+            out.reserve(q->networks.size());
+            for (const auto& net : q->networks) {
+                out.push_back(net.get());
+            }
+            return out;
+        })
+        .method("assertions", [](const TQuery& q) {
+            std::vector<const TAssertion*> out;
+            out.reserve(q.assertions.size());
+            for (const auto& a : q.assertions) {
+                out.push_back(a.get());
+            }
+            return out;
+        })
+        .method("assertions", [](const TQuery* q) {
+            if (!q) return std::vector<const TAssertion*>{};
+            std::vector<const TAssertion*> out;
+            out.reserve(q->assertions.size());
+            for (const auto& a : q->assertions) {
+                out.push_back(a.get());
+            }
+            return out;
+        })
+        .method("assertions", [](const std::shared_ptr<TQuery>& q) {
+            if (!q) return std::vector<const TAssertion*>{};
+            std::vector<const TAssertion*> out;
+            out.reserve(q->assertions.size());
+            for (const auto& a : q->assertions) {
+                out.push_back(a.get());
+            }
+            return out;
+        });
+
+    // TODO: Compatibility modes
 
     linarithexprterm_type
         .method("var", [](const LinearArithExpr::Term& t) {
@@ -415,9 +1042,112 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
             return t->var;
         });
 
+    bool_expr_type
+        .method("to_dnf", [](const TBoolExpr& b) {
+            return toDNF(&b);
+        })
+        .method("to_dnf", [](const TBoolExpr* b) {
+            if (!b) return DNF{};
+            return toDNF(b);
+        })
+        .method("to_dnf", [](const std::shared_ptr<TBoolExpr>& b) {
+            if (!b) return DNF{};
+            return toDNF(b.get());
+        });
+
+    mod.add_type<Polytope>("Polytope")
+        .method("coeff_matrix", [](const Polytope& p) {
+            return p.coeffMatrix;
+        })
+        .method("coeff_matrix", [](const Polytope* p) {
+            if (!p) return std::vector<std::vector<double>>{};
+            return p->coeffMatrix;
+        })
+        .method("coeff_matrix", [](const std::shared_ptr<Polytope>& p) {
+            if (!p) return std::vector<std::vector<double>>{};
+            return p->coeffMatrix;
+        })
+        .method("rhs", [](const Polytope& p) {
+            return p.rhs;
+        })
+        .method("rhs", [](const Polytope* p) {
+            if (!p) return std::vector<double>{};
+            return p->rhs;
+        })
+        .method("rhs", [](const std::shared_ptr<Polytope>& p) {
+            if (!p) return std::vector<double>{};
+            return p->rhs;
+        });
+    mod.add_type<SpecCase>("SpecCase")
+        .method("input_box", [](const SpecCase& sc) {
+            std::vector<std::vector<double>> out;
+            out.reserve(sc.inputBox.size());
+            for (const std::pair<double, double>& interval : sc.inputBox) {
+                out.push_back({interval.first, interval.second});
+            }
+            return out;
+        })
+        .method("input_box", [](const SpecCase* sc) {
+            if (!sc) return std::vector<std::vector<double>>{};
+            std::vector<std::vector<double>> out;
+            out.reserve(sc->inputBox.size());
+            for (const std::pair<double, double>& interval : sc->inputBox) {
+                out.push_back({interval.first, interval.second});
+            }
+            return out;
+        })
+        .method("input_box", [](const std::shared_ptr<SpecCase>& sc) {
+            if (!sc) return std::vector<std::vector<double>>{};
+            std::vector<std::vector<double>> out;
+            out.reserve(sc->inputBox.size());
+            for (const std::pair<double, double>& interval : sc->inputBox) {
+                out.push_back({interval.first, interval.second});
+            }
+            return out;
+        })
+        .method("output_constraints", [](const SpecCase& sc) {
+            std::vector<const Polytope*> out;
+            out.reserve(sc.outputConstraints.size());
+            for (const Polytope& p : sc.outputConstraints) {
+                out.push_back(&p);
+            }
+            return out;
+        })
+        .method("output_constraints", [](const SpecCase* sc) {
+            if (!sc) return std::vector<const Polytope*>{};
+            std::vector<const Polytope*> out;
+            out.reserve(sc->outputConstraints.size());
+            for (const Polytope& p : sc->outputConstraints) {
+                out.push_back(&p);
+            }
+            return out;
+        })
+        .method("output_constraints", [](const std::shared_ptr<SpecCase>& sc) {
+            if (!sc) return std::vector<const Polytope*>{};
+            std::vector<const Polytope*> out;
+            out.reserve(sc->outputConstraints.size());
+            for (const Polytope& p : sc->outputConstraints) {
+                out.push_back(&p);
+            }
+            return out;
+        });
     // Existing methods
     mod.method("parse_query", &jl_parse_query);
     mod.method("parse_query_str", &jl_parse_query_str);
     mod.method("check_query", &jl_check_query);
     mod.method("check_query_str", &jl_check_query_str);
+    mod.method("transform_to_compat", [](const TQuery& q) {
+        CompatTransformer transformer(&q);
+        return transformer.transform();
+    });
+    mod.method("transform_to_compat", [](const TQuery* q) {
+        if (!q) return std::vector<SpecCase>{};
+        CompatTransformer transformer(q);
+        return transformer.transform();
+    });
+    mod.method("transform_to_compat", [](const std::shared_ptr<TQuery>& q) {
+        if (!q) return std::vector<SpecCase>{};
+        CompatTransformer transformer(q.get());
+        return transformer.transform();
+    });
 }

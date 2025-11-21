@@ -10,7 +10,7 @@
 
 function specialize_node(node :: CxxWrap.CxxWrapCore.CxxBaseRef{T}) where T<:TNode
     base_type = typeof(node).name.wrapper
-    return _specialize_node(base_type, TNode, node)
+    return _specialize_node(base_type, T, node)
 end
 
 function _specialize_node(::Type{T}, ::Type{TNode}, node) where T

@@ -1,0 +1,19 @@
+(vnnlib-version <2.0>)
+
+(declare-network acc
+	(declare-input X Real [3])
+	(declare-output Y Real [])
+)
+
+(assert (<= (* -1.0 X[0]) 0.0))
+(assert (<= X[0] 50.0))
+(assert (<= (* -1.0 X[1]) 50.0))
+(assert (<= X[1] 50.0))
+(assert (<= (* -1.0 X[2]) 0.0))
+(assert (<= X[2] 150.0))
+(assert (<= (+ (* -1.5 X[1]) X[2]) -15.0))
+
+(assert (or 
+	(<= Y[0] -3.0)
+	(>= Y[0] 0.0)
+))

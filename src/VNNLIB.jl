@@ -16,10 +16,10 @@ export TElementType
 
 export TArithExpr, dtype, linearize
 
-export TVarExpr
+export TVarExpr, name, onnx_name, shape, kind, network_name, indices, line
 
-export TLiteral
-export TFloat
+export TLiteral, lexeme, line
+export TFloat, value
 export TInt
 
 export TNegate
@@ -79,6 +79,46 @@ end
 
 CxxWrap.@cxxdereference function children(node::TNode)
     return specialize_node.(VNNLIBCore.children(node))
+end
+
+CxxWrap.@cxxdereference function args(expr::TPlus)
+    return specialize_node.(VNNLIBCore.args(expr))
+end
+
+CxxWrap.@cxxdereference function args(expr::TMinus)
+    return specialize_node.(VNNLIBCore.args(expr))
+end
+
+CxxWrap.@cxxdereference function args(expr::TMultiply)
+    return specialize_node.(VNNLIBCore.args(expr))
+end
+
+CxxWrap.@cxxdereference function args(expr::TConnective)
+    return specialize_node.(VNNLIBCore.args(expr))
+end
+
+CxxWrap.@cxxdereference function expr(neg::TNegate)
+    return specialize_node(VNNLIBCore.expr(neg))
+end
+
+CxxWrap.@cxxdereference function lhs(cmp::TCompare)
+    return specialize_node(VNNLIBCore.lhs(cmp))
+end
+
+CxxWrap.@cxxdereference function rhs(cmp::TCompare)
+    return specialize_node(VNNLIBCore.rhs(cmp))
+end
+
+CxxWrap.@cxxdereference function rhs(poly::Polytope)
+    return VNNLIBCore.rhs(poly)
+end
+
+CxxWrap.@cxxdereference function expr(assertion::TAssertion)
+    return specialize_node(VNNLIBCore.expr(assertion))
+end
+
+CxxWrap.@cxxdereference function to_dnf(expr::TBoolExpr)
+    return map(x->specialize_node.(x), VNNLIBCore.to_dnf(expr))
 end
 
 end # module

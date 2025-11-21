@@ -1,0 +1,8 @@
+(vnnlib-version <2.0>)
+(declare-network test
+    (declare-input X Real [2])
+    (declare-output Y Real [2])
+)
+(assert (<= X[0] 1.0))
+(assert (>= X[0] 0.0))
+(assert (or (<= Y[0] 2.0) (<= Y[1] 3.0)))
