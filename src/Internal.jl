@@ -75,4 +75,7 @@ export SpecCase, input_box, output_constraints
 
 export transform_to_compat
 
+export DReal,DF16,DF32,DF64,DBF16,DF8E4M3FN,DF8E5M2,DF8E4M3FNUZ,DF8E5M2FNUZ,DF4E2M1,DI8,DI16,DI32,DI64,DU8,DU16,DU32,DU64,DC64,DC128,DBool,DString,DUnknown,DFloatConstant,DNegativeIntConstant,DPositiveIntConstant
+export Input,Output,Hidden,Network
+
 end

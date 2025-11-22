@@ -1,11 +1,3 @@
-using Test
-
-using VNNLIB
-
-
-function noop(x...)
-end
-
 @testset "Type Checking" begin
 
     @testset "Single Error Tests" begin
