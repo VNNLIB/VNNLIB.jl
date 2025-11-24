@@ -3,12 +3,11 @@
 #include <jlcxx/stl.hpp>
 #include <vector>
 #include <memory>
-#include "../deps/VNNLIB-CPP/include/VNNLib.h"
-#include "../deps/VNNLIB-CPP/include/TypedAbsyn.h"
-#include "../deps/VNNLIB-CPP/include/LinearArithExpr.h"
-#include "../deps/VNNLIB-CPP/include/DNFConverter.h"
-#include "../deps/VNNLIB-CPP/include/CompatTransformer.h"
-
+#include "VNNLib.h"
+#include "TypedAbsyn.h"
+#include "LinearArithExpr.h"
+#include "DNFConverter.h"
+#include "CompatTransformer.h"
 /*
 CxxWrap currently does not support class enums directly,
 so we provide a "classical" enum with conversion functions.
@@ -73,67 +72,67 @@ SymbolKind to_cpp_symbol_kind(JuliaSymbolKind jsk) {
     }
 }
 
-JuliaDType to_julia_type_enum(DType dt) {
+JuliaDType to_julia_type_enum(TDataType dt) {
     switch (dt) {
-        case DType::Real: return DReal;
-        case DType::F16: return DF16;
-        case DType::F32: return DF32;
-        case DType::F64: return DF64;
-        case DType::BF16: return DBF16;
-        case DType::F8E4M3FN: return DF8E4M3FN;
-        case DType::F8E5M2: return DF8E5M2;
-        case DType::F8E4M3FNUZ: return DF8E4M3FNUZ;
-        case DType::F8E5M2FNUZ: return DF8E5M2FNUZ;
-        case DType::F4E2M1: return DF4E2M1;
-        case DType::I8: return DI8;
-        case DType::I16: return DI16;
-        case DType::I32: return DI32;
-        case DType::I64: return DI64;
-        case DType::U8: return DU8;
-        case DType::U16: return DU16;
-        case DType::U32: return DU32;
-        case DType::U64: return DU64;
-        case DType::C64: return DC64;
-        case DType::C128: return DC128;
-        case DType::Bool: return DBool;
-        case DType::String: return DString;
-        case DType::Unknown: return DUnknown;
-        case DType::FloatConstant: return DFloatConstant;
-        case DType::NegativeIntConstant: return DNegativeIntConstant;
-        case DType::PositiveIntConstant: return DPositiveIntConstant;
+        case TDataType::Real: return DReal;
+        case TDataType::F16: return DF16;
+        case TDataType::F32: return DF32;
+        case TDataType::F64: return DF64;
+        case TDataType::BF16: return DBF16;
+        case TDataType::F8E4M3FN: return DF8E4M3FN;
+        case TDataType::F8E5M2: return DF8E5M2;
+        case TDataType::F8E4M3FNUZ: return DF8E4M3FNUZ;
+        case TDataType::F8E5M2FNUZ: return DF8E5M2FNUZ;
+        case TDataType::F4E2M1: return DF4E2M1;
+        case TDataType::I8: return DI8;
+        case TDataType::I16: return DI16;
+        case TDataType::I32: return DI32;
+        case TDataType::I64: return DI64;
+        case TDataType::U8: return DU8;
+        case TDataType::U16: return DU16;
+        case TDataType::U32: return DU32;
+        case TDataType::U64: return DU64;
+        case TDataType::C64: return DC64;
+        case TDataType::C128: return DC128;
+        case TDataType::Bool: return DBool;
+        case TDataType::String: return DString;
+        case TDataType::Unknown: return DUnknown;
+        case TDataType::FloatConstant: return DFloatConstant;
+        case TDataType::NegativeIntConstant: return DNegativeIntConstant;
+        case TDataType::PositiveIntConstant: return DPositiveIntConstant;
         default: return DUnknown; // Fallback
     }
 }
 
-DType to_cpp_type_enum(JuliaDType jdt) {
+TDataType to_cpp_type_enum(JuliaDType jdt) {
     switch (jdt) {
-        case DReal: return DType::Real;
-        case DF16: return DType::F16;
-        case DF32: return DType::F32;
-        case DF64: return DType::F64;
-        case DBF16: return DType::BF16;
-        case DF8E4M3FN: return DType::F8E4M3FN;
-        case DF8E5M2: return DType::F8E5M2;
-        case DF8E4M3FNUZ: return DType::F8E4M3FNUZ;
-        case DF8E5M2FNUZ: return DType::F8E5M2FNUZ;
-        case DF4E2M1: return DType::F4E2M1;
-        case DI8: return DType::I8;
-        case DI16: return DType::I16;
-        case DI32: return DType::I32;
-        case DI64: return DType::I64;
-        case DU8: return DType::U8;
-        case DU16: return DType::U16;
-        case DU32: return DType::U32;
-        case DU64: return DType::U64;
-        case DC64: return DType::C64;
-        case DC128: return DType::C128;
-        case DBool: return DType::Bool;
-        case DString: return DType::String;
-        case DUnknown: return DType::Unknown;
-        case DFloatConstant: return DType::FloatConstant;
-        case DNegativeIntConstant: return DType::NegativeIntConstant;
-        case DPositiveIntConstant: return DType::PositiveIntConstant;
-        default: return DType::Unknown; // Fallback
+        case DReal: return TDataType::Real;
+        case DF16: return TDataType::F16;
+        case DF32: return TDataType::F32;
+        case DF64: return TDataType::F64;
+        case DBF16: return TDataType::BF16;
+        case DF8E4M3FN: return TDataType::F8E4M3FN;
+        case DF8E5M2: return TDataType::F8E5M2;
+        case DF8E4M3FNUZ: return TDataType::F8E4M3FNUZ;
+        case DF8E5M2FNUZ: return TDataType::F8E5M2FNUZ;
+        case DF4E2M1: return TDataType::F4E2M1;
+        case DI8: return TDataType::I8;
+        case DI16: return TDataType::I16;
+        case DI32: return TDataType::I32;
+        case DI64: return TDataType::I64;
+        case DU8: return TDataType::U8;
+        case DU16: return TDataType::U16;
+        case DU32: return TDataType::U32;
+        case DU64: return TDataType::U64;
+        case DC64: return TDataType::C64;
+        case DC128: return TDataType::C128;
+        case DBool: return TDataType::Bool;
+        case DString: return TDataType::String;
+        case DUnknown: return TDataType::Unknown;
+        case DFloatConstant: return TDataType::FloatConstant;
+        case DNegativeIntConstant: return TDataType::NegativeIntConstant;
+        case DPositiveIntConstant: return TDataType::PositiveIntConstant;
+        default: return TDataType::Unknown; // Fallback
     }
 }
 

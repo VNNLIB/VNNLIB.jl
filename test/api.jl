@@ -17,14 +17,14 @@
         (assert (<= (+ (* -1.5 X[1]) X[2]) -15.0))
 
         (assert (or 
-        	(<= Y[0] -3.0)
-        	(>= Y[0] 0.0)
+        	(<= Y -3.0)
+        	(>= Y 0.0)
         ))
         """
         
         parse_query_str(content) do (ast)
             # Test TQuery level
-            @test string(ast) == "(vnnlib-version <2.0>) (declare-network acc (declare-input X Real [3]) (declare-output Y Real [])) (assert (<= (* -1.0 X [0]) 0.0)) (assert (<= X [0] 50.0)) (assert (<= (* -1.0 X [1]) 50.0)) (assert (<= X [1] 50.0)) (assert (<= (* -1.0 X [2]) 0.0)) (assert (<= X [2] 150.0)) (assert (<= (+ (* -1.5 X [1]) X [2]) -15.0)) (assert (or (<= Y [0] -3.0) (>= Y [0] 0.0))) "
+            @test string(ast) == "(vnnlib-version <2.0>) (declare-network acc (declare-input X Real [3]) (declare-output Y Real [])) (assert (<= (* -1.0 X [0]) 0.0)) (assert (<= X [0] 50.0)) (assert (<= (* -1.0 X [1]) 50.0)) (assert (<= X [1] 50.0)) (assert (<= (* -1.0 X [2]) 0.0)) (assert (<= X [2] 150.0)) (assert (<= (+ (* -1.5 X [1]) X [2]) -15.0)) (assert (or (<= Y -3.0) (>= Y 0.0))) "
             
             children_list = VNNLIB.children(ast)
             @test length(children_list) == 9  # 1 network + 8 assertions
@@ -126,17 +126,17 @@
             @test string(VNNLIB.lhs(expr7)) == "(+ (* -1.5 X [1]) X [2]) "
             @test string(VNNLIB.rhs(expr7)) == "-15.0 "
             
-            # Test eighth assertion: (assert (or (<= Y[0] -3.0) (>= Y[0] 0.0)))
+            # Test eighth assertion: (assert (or (<= Y -3.0) (>= Y 0.0)))
             assertion8 = assertions[8]
-            @test string(assertion8) == "(assert (or (<= Y [0] -3.0) (>= Y [0] 0.0))) "
+            @test string(assertion8) == "(assert (or (<= Y -3.0) (>= Y 0.0))) "
             expr8 = VNNLIB.expr(assertion8)
-            @test string(expr8) == "(or (<= Y [0] -3.0) (>= Y [0] 0.0)) "
+            @test string(expr8) == "(or (<= Y -3.0) (>= Y 0.0)) "
             
             # Test or expression args
             or_args = VNNLIB.args(expr8)
             @test length(or_args) == 2
-            @test string(or_args[1]) == "(<= Y [0] -3.0) "
-            @test string(or_args[2]) == "(>= Y [0] 0.0) "
+            @test string(or_args[1]) == "(<= Y -3.0) "
+            @test string(or_args[2]) == "(>= Y 0.0) "
         end
     end
 
@@ -251,22 +251,22 @@
         (vnnlib-version <2.0>)
         (declare-network test
             (declare-input X Real [2])
-            (declare-output Y Real [1])
+            (declare-output Y Real [])
         )
-        (assert (and (<= X[0] 10.0) (>= X[1] 5.0) (<= Y[0] 3.0)))
+        (assert (and (<= X[0] 10.0) (>= X[1] 5.0) (<= Y 3.0)))
         """
         
         parse_query_str(content) do (ast)
             assertions = VNNLIB.assertions(ast)
             and_expr = VNNLIB.expr(assertions[1])
             
-            @test string(and_expr) == "(and (<= X [0] 10.0) (>= X [1] 5.0) (<= Y [0] 3.0)) "
+            @test string(and_expr) == "(and (<= X [0] 10.0) (>= X [1] 5.0) (<= Y 3.0)) "
             
             and_args = VNNLIB.args(and_expr)
             @test length(and_args) == 3
             @test string(and_args[1]) == "(<= X [0] 10.0) "
             @test string(and_args[2]) == "(>= X [1] 5.0) "
-            @test string(and_args[3]) == "(<= Y [0] 3.0) "
+            @test string(and_args[3]) == "(<= Y 3.0) "
         end
     end
 
@@ -274,10 +274,10 @@
         content = """
         (vnnlib-version <2.0>)
         (declare-network test
-            (declare-input X Real [2] "input_layer")
+            (declare-input X Real [2])
             (declare-hidden H1 Real [3] "hidden_layer_1")
             (declare-hidden H2 Real [4] "hidden_layer_2")
-            (declare-output Y Real [1] "output_layer")
+            (declare-output Y Real [1])
         )
         (assert (<= X[0] 10.0))
         """
@@ -317,10 +317,10 @@
         (vnnlib-version <2.0>)
         (declare-network test
             (declare-input X Real [2, 3])
-            (declare-output Y Real [1])
+            (declare-output Y Real [])
         )
         (assert (<= X[1, 2] 10.0))
-        (assert (>= Y[0] 5.0))
+        (assert (>= Y 5.0))
         """
         
         parse_query_str(content) do (ast)
@@ -339,9 +339,9 @@
             
             # Test single-dimensional variable with index
             var_expr2 = VNNLIB.lhs(VNNLIB.expr(assertions[2]))
-            @test string(var_expr2) == "Y [0] "
+            @test string(var_expr2) == "Y "
             @test VNNLIB.name(var_expr2) == "Y"
-            @test VNNLIB.indices(var_expr2) == [0]
+            @test VNNLIB.indices(var_expr2) == []
             @test VNNLIB.line(var_expr2) > 0
         end
     end
@@ -351,10 +351,10 @@
         (vnnlib-version <2.0>)
         (declare-network test
             (declare-input X Real [1])
-            (declare-output Y Real [1])
+            (declare-output Y Real [])
         )
         (assert (<= X[0] 42.5))
-        (assert (>= Y[0] -3.14159))
+        (assert (>= Y -3.14159))
         """
         
         parse_query_str(content) do (ast)
@@ -381,10 +381,10 @@
         (vnnlib-version <2.0>)
         (declare-network test
             (declare-input X int32 [1])
-            (declare-output Y int32 [1])
+            (declare-output Y int32 [])
         )
         (assert (<= X[0] 42))
-        (assert (>= Y[0] -100))
+        (assert (>= Y -100))
         """
         
         parse_query_str(content) do (ast)
