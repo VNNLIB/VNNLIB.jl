@@ -12,8 +12,9 @@ VNNLIB_jll = "2fc91ace-7b29-55fa-9e7a-edf3c4bda191"
 
 [compat]
 CxxWrap = "0.17.4"
-Test = "1.11.0"
+Test = "1.10"
 VNNLIB_jll = "0.1.0"
+julia = "1.10"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
