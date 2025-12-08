@@ -9,14 +9,16 @@ version = "0.1.0"
 [deps]
 CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
 Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+VNNLIB_jll = "2fc91ace-7b29-55fa-9e7a-edf3c4bda191"
+
+[compat]
+CxxWrap = "0.17.4"
+Libdl = "1.11.0"
+Test = "1.11.0"
+VNNLIB_jll = "0.1.0"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
 test = ["Test"]
-
-[compat]
-CxxWrap = "0.17.3"
-Libdl = "1.11.0"
-Test = "1.11.0"

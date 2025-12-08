@@ -19,7 +19,7 @@ Afterwards, you should be able to run
 ```julia
 pkg> activate .
 julia> using VNNLIB
-julia> parse_query("path/to/.../acc.vnnlib") do (ast)
+julia> parseQueryFile("path/to/.../acc.vnnlib") do (ast)
     println(ast)
     println(children(ast))
 end

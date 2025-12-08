@@ -11,7 +11,7 @@
             )
             (assert (<= Y[0] 5))
             """
-            @test_throws ["\"error_count\": 1", "TypeMismatch", "5"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "TypeMismatch", "5"] parseQueryString(noop, invalid_content)
         end
 
         @testset "test_int_variable_with_float_constant" begin
@@ -23,7 +23,7 @@
             )
             (assert (<= Y[0] 3.14))
             """
-            @test_throws ["\"error_count\": 1", "TypeMismatch", "3.14"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "TypeMismatch", "3.14"] parseQueryString(noop, invalid_content)
         end
 
         @testset "test_uint_variable_with_negative_constant" begin
@@ -35,7 +35,7 @@
             )
             (assert (<= Y[0] -5))
             """
-            @test_throws ["\"error_count\": 1", "TypeMismatch", "-5"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "TypeMismatch", "-5"] parseQueryString(noop, invalid_content)
         end
 
         @testset "test_mixed_variable_types" begin
@@ -48,7 +48,7 @@
             )
             (assert (<= X[0] Z[0]))
             """
-            @test_throws ["\"error_count\": 1", "TypeMismatch", "Z"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "TypeMismatch", "Z"] parseQueryString(noop, invalid_content)
         end
 
         @testset "test_mixed_variable_precision" begin
@@ -61,7 +61,7 @@
             )
             (assert (<= X[0] Z[0]))
             """
-            @test_throws ["\"error_count\": 1", "TypeMismatch", "Z"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "TypeMismatch", "Z"] parseQueryString(noop, invalid_content)
         end
 
         @testset "test_mixed_constant_types" begin
@@ -73,7 +73,7 @@
             )
             (assert (<= X[0] (+ 3 3.0)))
             """
-            @test_throws ["\"error_count\": 1", "TypeMismatch", "3.0"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "TypeMismatch", "3.0"] parseQueryString(noop, invalid_content)
         end
     end
 
@@ -89,7 +89,7 @@
             )
             (assert (<= 0 (+ X[0] Z[0] 3.14)))
             """
-            @test_throws ["\"error_count\": 2", "TypeMismatch", "Z", "3.14"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 2", "TypeMismatch", "Z", "3.14"] parseQueryString(noop, invalid_content)
         end
 
         @testset "test_multiple_assertions_mismatches" begin
@@ -104,7 +104,7 @@
             (assert (<= 0.0 Z[0]))
             (assert (<= 0.0 Y[0]))
             """
-            @test_throws ["\"error_count\": 3", "TypeMismatch", "X", "Z", "Y"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 3", "TypeMismatch", "X", "Z", "Y"] parseQueryString(noop, invalid_content)
         end
     end
 
@@ -121,7 +121,7 @@
             (assert (and (<= 0 X[0]) (<= 0 Z[0]) (<= 0 Y[0])))
             """
             passed = false
-            parse_query_str(invalid_content) do (ast)
+            parseQueryString(invalid_content) do (ast)
                 passed = true
             end # should not throw
             @test passed
@@ -138,7 +138,7 @@
             (assert (<= (+ X[0] Z[0]) Y[0]))
             """
             passed = false
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 passed = true
             end # should not throw
             @test passed
@@ -155,7 +155,7 @@
             (assert (<= (+ X[0] Z[0] 42) Y[0]))
             """
             passed = false
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 passed = true
             end # should not throw
             @test passed
@@ -171,7 +171,7 @@
             (assert (<= (+ X[0] 3.14) Y[0]))
             """
             passed = false
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 passed = true
             end # should not throw
             @test passed
@@ -186,7 +186,7 @@
             (assert (<= (+ X[0] 42) Y[0]))
             """
             passed = false
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 passed = true
             end # should not throw
             @test passed

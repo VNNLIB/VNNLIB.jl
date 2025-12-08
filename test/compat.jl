@@ -50,7 +50,7 @@
         (assert (<= Y[0] 2.0))
         """
         
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             cases = collect(VNNLIB.transform_to_compat(ast))
             @test length(cases) == 1
         end
@@ -67,7 +67,7 @@
         (assert (>= X[0] 0.0))
         (assert (or (<= Y[0] 2.0) (<= Y[1] 3.0)))
         """
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             cases = collect(VNNLIB.transform_to_compat(ast))
             @test length(cases) == 1
             case = cases[1]
@@ -96,7 +96,7 @@
         )
         (assert (or (and (<= Y[0] 2.0) (<= Y[1] 3.0)) (<= Y[0] 1.0)))
         """
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             cases = collect(VNNLIB.transform_to_compat(ast))
             @test length(cases) == 1
             case = cases[1]
@@ -129,7 +129,7 @@
         (assert (or (and (<= Y[0] 1.0) (<= Y[1] 2.0)) 
                     (and (<= Y[0] 3.0) (<= Y[1] 4.0))))
         """
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             cases = collect(VNNLIB.transform_to_compat(ast))
             @test length(cases) == 1
             case = cases[1]
@@ -165,7 +165,7 @@
         (assert (>= X[2] 0.0))
         (assert (or (<= Y[0] 1.0)))
         """
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             cases = collect(VNNLIB.transform_to_compat(ast))
             @test length(cases) == 1
             case = cases[1]
@@ -188,7 +188,7 @@
         )
         (assert (or (>= Y[0] -1.0) (>= Y[1] -2.0)))
         """
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             cases = collect(VNNLIB.transform_to_compat(ast))
             @test length(cases) == 1
             case = cases[1]
@@ -214,7 +214,7 @@
         (assert (or (<= Y[0] 1.0) (<= Y[1] 2.0)))
         (assert (or (<= Y[0] 3.0) (<= Y[1] 4.0)))
         """
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             cases = collect(VNNLIB.transform_to_compat(ast))
             @test length(cases) == 1
             case = cases[1]
@@ -240,7 +240,7 @@
         )
         (assert (<= Y[0] 1.0))
         """
-        @test_throws ["Only single-network queries are supported"] parse_query_str(content) do (ast)
+        @test_throws ["Only single-network queries are supported"] parseQueryString(content) do (ast)
             collect(VNNLIB.transform_to_compat(ast))
         end
     end
@@ -255,7 +255,7 @@
         )
         (assert (<= Y[0] 1.0))
         """
-        @test_throws ["Multiple input variables found"] parse_query_str(content) do (ast)
+        @test_throws ["Multiple input variables found"] parseQueryString(content) do (ast)
             collect(VNNLIB.transform_to_compat(ast))
         end
     end
@@ -270,7 +270,7 @@
         )
         (assert (<= Y[0] 1.0))
         """
-        @test_throws ["Multiple output variables found"] parse_query_str(content) do (ast)
+        @test_throws ["Multiple output variables found"] parseQueryString(content) do (ast)
             collect(VNNLIB.transform_to_compat(ast))
         end
     end
@@ -286,7 +286,7 @@
         (assert (>= X[3] -1.0))
         (assert (or (<= Y[0] 2.0)))
         """
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             cases = collect(VNNLIB.transform_to_compat(ast))
             @test length(cases) == 1
             case = cases[1]
@@ -316,7 +316,7 @@
         (assert (<= (* 2.0 X[0]) 10.0))
         (assert (or (<= (* 2.0 Y[0]) 6.0) (<= (+ Y[0] Y[1]) 9.0)))
         """
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             cases = collect(VNNLIB.transform_to_compat(ast))
             @test length(cases) == 1
             case = cases[1]
@@ -350,7 +350,7 @@
         (assert (or (<= Y[0] 5.0)))
         """
         
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             cases = collect(VNNLIB.transform_to_compat(ast))
             @test length(cases) == 1
             case = cases[1]
@@ -372,7 +372,7 @@
         """
         
         # Mixed input-output constraints should be rejected
-        @test_throws ["Input-output mixed constraints are not supported"] parse_query_str(content) do (ast)
+        @test_throws ["Input-output mixed constraints are not supported"] parseQueryString(content) do (ast)
             collect(VNNLIB.transform_to_compat(ast))
         end
     end
@@ -387,7 +387,7 @@
         (assert (or (<= Y[0] 1.0) (<= Y[1] 2.0) (<= Y[2] 3.0) (>= Y[0] -1.0)))
         """
         
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             cases = collect(VNNLIB.transform_to_compat(ast))
             @test length(cases) == 1
             case = cases[1]

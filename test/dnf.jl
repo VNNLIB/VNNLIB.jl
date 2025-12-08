@@ -28,7 +28,7 @@ end
             )
             (assert (<= X[0] 10.0))
             """
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 dnf = to_dnf(get_bool(ast))
                 expected = [[ "(<= X [0] 10.0) "]]
                 assert_dnf_equals(expected, dnf)
@@ -43,7 +43,7 @@ end
             )
             (assert (and (<= X[0] 10.0) (>= X[1] 5.0)))
             """
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 dnf = to_dnf(get_bool(ast))
                 expected = [[ "(<= X [0] 10.0) ", "(>= X [1] 5.0) "]]
                 assert_dnf_equals(expected, dnf)
@@ -58,7 +58,7 @@ end
             )
             (assert (and (<= X[0] 10.0) (>= X[1] 5.0) (<= X[2] 20.0)))
             """
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 dnf = to_dnf(get_bool(ast))
                 expected = [[ "(<= X [0] 10.0) ", "(>= X [1] 5.0) ", "(<= X [2] 20.0) "]]
                 assert_dnf_equals(expected, dnf)
@@ -75,7 +75,7 @@ end
             )
             (assert (or (<= X[0] 10.0) (>= X[1] 5.0)))
             """
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 dnf = to_dnf(get_bool(ast))
                 expected = [[ "(<= X [0] 10.0) "], ["(>= X [1] 5.0) "]]
                 assert_dnf_equals(expected, dnf)
@@ -90,7 +90,7 @@ end
             )
             (assert (or (<= X[0] 10.0) (>= X[1] 5.0) (<= X[2] 0.0)))
             """
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 dnf = to_dnf(get_bool(ast))
                 expected = [[ "(<= X [0] 10.0) "], ["(>= X [1] 5.0) "], ["(<= X [2] 0.0) "]]
                 assert_dnf_equals(expected, dnf)
@@ -107,7 +107,7 @@ end
                         (or (<= X[2] 20.0) (>= Y[0] 15.0))
                         (or (<= Y[1] 30.0) (>= Y[2] 25.0))))
             """
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 dnf = to_dnf(get_bool(ast))
                 expected = [
                     [ "(<= X [0] 10.0) ", "(<= X [2] 20.0) ", "(<= Y [1] 30.0) "],
@@ -134,7 +134,7 @@ end
             (assert (and (or (<= X[0] 10.0) (and (>= X[1] 5.0) (<= X[2] 15.0))) 
                         (or (>= Y[0] 20.0) (<= Y[1] 25.0))))
             """
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 dnf = to_dnf(get_bool(ast))
                 expected = [
                     [ "(<= X [0] 10.0) ", "(>= Y [0] 20.0) "],
@@ -155,7 +155,7 @@ end
         )
         (assert (and (<= (+ X[0] X[1]) 10.0) (>= (* -1.0 X[0]) -5.0)))
         """
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             dnf = to_dnf(get_bool(ast))
             expected = [
                 [ "(<= (+ X [0] X [1]) 10.0) ", "(>= (* -1.0 X [0]) -5.0) "]

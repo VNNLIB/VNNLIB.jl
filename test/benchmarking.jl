@@ -14,7 +14,7 @@ function benchmark_parser(file::String, iterations::Int=10)
     println("File size: $(sizeof(content)) bytes")
     println("Iterations: $iterations")
     println("Starting benchmark at $(Dates.now())")
-    res = @benchmark parse_query_str($noop, $content) samples=iterations setup=(GC.gc())
+    res = @benchmark parseQueryString($noop, $content) samples=iterations setup=(GC.gc())
     display(res)
     println("Benchmark completed at $(Dates.now())")
 end

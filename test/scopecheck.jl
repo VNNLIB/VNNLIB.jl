@@ -12,7 +12,7 @@
             (>= Y[0] 0.0)
         ))
         """
-        @test_throws ["\"error_count\": 1", "MultipleDeclaration", "X"] parse_query_str(noop, invalid_content)
+        @test_throws ["\"error_count\": 1", "MultipleDeclaration", "X"] parseQueryString(noop, invalid_content)
     end
     @testset "Undeclared Variable Tests" begin
         invalid_content = """
@@ -26,7 +26,7 @@
             (>= Y[0] 0.0)
         ))
         """
-        @test_throws ["\"error_count\": 1", "UndeclaredVariable", "Z"] parse_query_str(noop, invalid_content)
+        @test_throws ["\"error_count\": 1", "UndeclaredVariable", "Z"] parseQueryString(noop, invalid_content)
     end
     @testset "Invalid Dimensions Tests" begin
         invalid_content = """
@@ -40,7 +40,7 @@
             (>= Y[0] 0.0)
         ))
         """
-        @test_throws ["\"error_count\": 3", "InvalidDimensions", "X", "UndeclaredVariable", "X", "InvalidScalarAccess"] parse_query_str(noop, invalid_content)
+        @test_throws ["\"error_count\": 3", "InvalidDimensions", "X", "UndeclaredVariable", "X", "InvalidScalarAccess"] parseQueryString(noop, invalid_content)
     end
     @testset "Index Bounds Tests" begin
         @testset "test_out_of_bounds_indices" begin
@@ -55,7 +55,7 @@
                 (>= Y 0.0)
             ))
             """
-            @test_throws ["\"error_count\": 1", "IndexOutOfBounds", "X[4,4]", "Index 4 is out of bounds"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "IndexOutOfBounds", "X[4,4]", "Index 4 is out of bounds"] parseQueryString(noop, invalid_content)
         end
         @testset "test_too_many_indices" begin
             invalid_content = """
@@ -69,7 +69,7 @@
                 (>= Y 0.0)
             ))
             """
-            @test_throws ["\"error_count\": 1", "TooManyIndices", "X[1,2,3]"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "TooManyIndices", "X[1,2,3]"] parseQueryString(noop, invalid_content)
         end
         @testset "test_not_enough_indices" begin
             invalid_content = """
@@ -83,7 +83,7 @@
                 (>= Y 0.0)
             ))
             """
-            @test_throws ["\"error_count\": 1", "NotEnoughIndices", "X[1]"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "NotEnoughIndices", "X[1]"] parseQueryString(noop, invalid_content)
         end
     end
     @testset "ONNX Name Consistency Tests" begin
@@ -98,7 +98,7 @@
             (assert (>= Y 0.0))
             """
             passed = false
-            parse_query_str(content) do _
+            parseQueryString(content) do _
                 passed = true
             end
             @test passed
@@ -114,7 +114,7 @@
             (assert (>= Y 0.0))
             """
             passed = false
-            parse_query_str(content) do _
+            parseQueryString(content) do _
                 passed = true
             end
             @test passed

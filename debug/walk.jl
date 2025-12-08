@@ -69,53 +69,53 @@ CxxWrap.@cxxdereference function walk(n :: VNNLIB.TNode; d=0, dnf=true)
     if typeof(n) <: VNNLIB.TBoolExpr && dnf
         println(" "^d * "$(VNNLIB.typeof(n)): $(n)")
         println(" "^d * " $t")
-        println(" "^d * " --- DNF Form --- ")
-        dnf = VNNLIB.to_dnf(n)
-        for clause in dnf
-            println(" "^(d+1) * "Clause:")
-            for comp in clause
-                walk(comp; d=d+2, dnf=false)
-            end
-        end
-        println(" "^d * " --- End DNF Form --- ")
+        # println(" "^d * " --- DNF Form --- ")
+        # dnf = VNNLIB.to_dnf(n)
+        # for clause in dnf
+        #     println(" "^(d+1) * "Clause:")
+        #     for comp in clause
+        #         walk(comp; d=d+2, dnf=false)
+        #     end
+        # end
+        # println(" "^d * " --- End DNF Form --- ")
     else
         println(" "^d * "$(VNNLIB.typeof(n)): $(n)")
         if length(t) > 0
             println(" "^d * " $t")
         end
-        if typeof(n) <: VNNLIB.TArithExpr
-            println(" "^d * " linearized:")
-            walk(VNNLIB.linearize(n), d=d+1)
-            println(" "^d * " --- ")
-        end
+        #if typeof(n) <: VNNLIB.TArithExpr
+        #    println(" "^d * " linearized:")
+        #    walk(VNNLIB.linearize(n), d=d+1)
+        #    println(" "^d * " --- ")
+        #end
         for c in VNNLIB.children(n)
             walk(c, d=d+1)
         end
     end
 end
 
-parse_query(walk,"acc.vnnlib")
+parseQueryFile(walk,"acc.vnnlib")
 
-parse_query_str(walk, """
-(vnnlib-version <2.0>)
+# parseQueryString(walk, """
+# (vnnlib-version <2.0>)
 
-(declare-network acc
-	(declare-input X Real [3])
-	(declare-output Y Real [])
-)
+# (declare-network acc
+# 	(declare-input X Real [3])
+# 	(declare-output Y Real [])
+# )
 
-(assert (<= (* -1.0 X[0]) 0.0))
-""")
+# (assert (<= (* -1.0 X[0]) 0.0))
+# """)
 
-println("------------ Compat -----------")
-parse_query("compat.vnnlib") do (ast)
-    for spec_case in VNNLIB.transform_to_compat(ast)
-        println("SpecCase:")
-        println(" Input Box: $(VNNLIB.input_box(spec_case))")
-        println(" Output Constraints:")
-        for polytope in VNNLIB.output_constraints(spec_case)
-            println("  Polytope: Coeff Matrix: $(VNNLIB.coeff_matrix(polytope))")
-            println("  Polytope: RHS: $(VNNLIB.rhs(polytope))")
-        end
-    end
-end
+# println("------------ Compat -----------")
+# parseQueryFile("compat.vnnlib") do (ast)
+#     for spec_case in VNNLIB.transform_to_compat(ast)
+#         println("SpecCase:")
+#         println(" Input Box: $(VNNLIB.input_box(spec_case))")
+#         println(" Output Constraints:")
+#         for polytope in VNNLIB.output_constraints(spec_case)
+#             println("  Polytope: Coeff Matrix: $(VNNLIB.coeff_matrix(polytope))")
+#             println("  Polytope: RHS: $(VNNLIB.rhs(polytope))")
+#         end
+#     end
+# end

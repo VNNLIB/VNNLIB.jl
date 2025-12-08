@@ -22,7 +22,7 @@
         ))
         """
         
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             # Test TQuery level
             @test string(ast) == "(vnnlib-version <2.0>) (declare-network acc (declare-input X Real [3]) (declare-output Y Real [])) (assert (<= (* -1.0 X [0]) 0.0)) (assert (<= X [0] 50.0)) (assert (<= (* -1.0 X [1]) 50.0)) (assert (<= X [1] 50.0)) (assert (<= (* -1.0 X [2]) 0.0)) (assert (<= X [2] 150.0)) (assert (<= (+ (* -1.5 X [1]) X [2]) -15.0)) (assert (or (<= Y -3.0) (>= Y 0.0))) "
             
@@ -153,7 +153,7 @@
         (assert (<= (* -1.5 Y[0]) 3.0))
         """
         
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             assertions = VNNLIB.assertions(ast)
             
             # Test TPlus: (+ X[0] X[1])
@@ -205,7 +205,7 @@
         (assert (!= Y[1] 1.0))
         """
         
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             assertions = VNNLIB.assertions(ast)
             
             # Test TLessThan: (< X[0] 10.0)
@@ -256,7 +256,7 @@
         (assert (and (<= X[0] 10.0) (>= X[1] 5.0) (<= Y 3.0)))
         """
         
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             assertions = VNNLIB.assertions(ast)
             and_expr = VNNLIB.expr(assertions[1])
             
@@ -282,7 +282,7 @@
         (assert (<= X[0] 10.0))
         """
         
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             networks = VNNLIB.networks(ast)
             net = networks[1]
             
@@ -323,7 +323,7 @@
         (assert (>= Y 5.0))
         """
         
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             assertions = VNNLIB.assertions(ast)
             
             # Test multidimensional variable with indices
@@ -357,7 +357,7 @@
         (assert (>= Y -3.14159))
         """
         
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             assertions = VNNLIB.assertions(ast)
             
             # Test float literal: 42.5
@@ -387,7 +387,7 @@
         (assert (>= Y -100))
         """
         
-        parse_query_str(content) do (ast)
+        parseQueryString(content) do (ast)
             assertions = VNNLIB.assertions(ast)
             
             # Test integer literal: 42

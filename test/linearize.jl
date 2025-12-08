@@ -34,7 +34,7 @@ end
             )
             (assert (<= X[0] 10.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 0.0, [(1.0, "X[0]")])
@@ -49,7 +49,7 @@ end
             )
             (assert (<= 5.0 10.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 5.0, [])
@@ -64,7 +64,7 @@ end
             )
             (assert (<= (+ X[0] 5.0) 10.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 5.0, [(1.0, "X[0]")])
@@ -79,7 +79,7 @@ end
             )
             (assert (<= (- X[0] 5.0) 0.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, -5.0, [(1.0, "X[0]")])
@@ -94,7 +94,7 @@ end
             )
             (assert (<= (- 5.0 X[0]) 0.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 5.0, [(-1.0, "X[0]")])
@@ -109,7 +109,7 @@ end
             )
             (assert (<= (* X[0] 3.5) 7.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 0.0, [(3.5, "X[0]")])
@@ -124,7 +124,7 @@ end
             )
             (assert (<= (* -2.0 X[0]) 0.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 0.0, [(-2.0, "X[0]")])
@@ -139,7 +139,7 @@ end
             )
             (assert (<= (- X[0]) 0.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 0.0, [(-1.0, "X[0]")])
@@ -154,7 +154,7 @@ end
             )
             (assert (<= (* -5.0 X[0]) 0.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 0.0, [(-5.0, "X[0]")])
@@ -171,7 +171,7 @@ end
             )
             (assert (<= (+ X[0] 5.0 X[0]) 10.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 5.0, [(2.0, "X[0]")])
@@ -186,7 +186,7 @@ end
             )
             (assert (<= (- X[0] X[0]) 0.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 0.0, [])
@@ -201,7 +201,7 @@ end
             )
             (assert (<= (+ (- X[0] X[1]) 3.0) 0.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 3.0, [(1.0, "X[0]"), (-1.0, "X[1]")])
@@ -216,7 +216,7 @@ end
             )
             (assert (<= (- X[0] X[1] X[2]) 0.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 0.0, [(1.0, "X[0]"), (-1.0, "X[1]"), (-1.0, "X[2]")])
@@ -233,7 +233,7 @@ end
             )
             (assert (<= (+ 5.0 (* -1.0 X[0]) (- X[1])) 0.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 5.0, [(-1.0, "X[0]"), (-1.0, "X[1]")])
@@ -248,7 +248,7 @@ end
             )
             (assert (<= (+ (* 2.0 (* X[0] 3.0)) 2.0) 20.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 2.0, [(6.0, "X[0]")])
@@ -265,7 +265,7 @@ end
             )
             (assert (<= (* X[0] 0.0) 0.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 0.0, [])
@@ -280,7 +280,7 @@ end
             )
             (assert (<= (* X[0] 1.0) 10.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 0.0, [(1.0, "X[0]")])
@@ -295,7 +295,7 @@ end
             )
             (assert (<= (+ X[0] 0.0) 5.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 0.0, [(1.0, "X[0]")])
@@ -312,7 +312,7 @@ end
             )
             (assert (<= (* 2.0 3.0 2.5) 20.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 15.0, [])
@@ -327,7 +327,7 @@ end
             )
             (assert (<= (+ 1.0 2.0 5.0) 10.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 8.0, [])
@@ -344,7 +344,7 @@ end
             )
             (assert (<= (* 0.0001 X[0]) 0.1))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 0.0, [(0.0001, "X[0]")])
@@ -359,7 +359,7 @@ end
             )
             (assert (<= (* 1000000.0 X[0]) 1000.0))
             """
-            parse_query_str(content) do query
+            parseQueryString(content) do query
                 left = get_lhs(query)
                 lin_expr = linearize(left)
                 check_linear_expr(lin_expr, 0.0, [(1000000.0, "X[0]")])
@@ -375,7 +375,7 @@ end
         )
         (assert (<= (* X[0] (+ X[1] 2.0)) 25.0))
         """
-        parse_query_str(content) do query
+        parseQueryString(content) do query
             left = get_lhs(query)
             @test_throws ["Non-linear"] linearize(left)
         end

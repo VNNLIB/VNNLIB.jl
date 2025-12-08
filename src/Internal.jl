@@ -14,16 +14,15 @@ module VNNLIBCore
 # is not garbage collected on their own).
 
 using CxxWrap
+using VNNLIB_jll
 
-libpath() = joinpath(@__DIR__, "..", "build", "VNNLib_julia.so")
-
-@wrapmodule(libpath)
+@wrapmodule(() -> VNNLIB_jll.libVNNLibJulia)
 
 function __init__()
     @initcxx
 end
 
-export check_query, check_query_str
+export checkQueryFile, checkQueryString
 export SymbolInfo
 export TNode, to_string
 export TElementType

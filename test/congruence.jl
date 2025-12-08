@@ -15,7 +15,7 @@
             (assert (>= X1[0] 0.0))
             """
             passes = false
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 passes = true
             end
             @test passes
@@ -35,7 +35,7 @@
             (assert (>= X1[0] 0.0))
             """
             passes = false
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 passes = true
             end
             @test passes
@@ -55,7 +55,7 @@
             (assert (>= X1[0] 0.0))
             """
             passes = false
-            parse_query_str(content) do (ast)
+            parseQueryString(content) do (ast)
                 passes = true
             end
             @test passes
@@ -76,7 +76,7 @@
             )
             (assert (>= X1[0, 0] 0.0))
             """
-            @test_throws ["\"error_count\": 1", "Shape mismatch", "net1"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "Shape mismatch", "net1"] parseQueryString(noop, invalid_content)
         end
         @testset "test_variable_count_mismatch" begin
             invalid_content = """
@@ -93,7 +93,7 @@
             )
             (assert (>= X1[0] 0.0))
             """
-            @test_throws ["\"error_count\": 1", "Number of variables mismatch", "net1"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "Number of variables mismatch", "net1"] parseQueryString(noop, invalid_content)
         end
         @testset "test_onnx_name_mismatches" begin
             invalid_content = """
@@ -110,7 +110,7 @@
             (assert (>= X1[0] 0.0))
             """
             passes = false
-            parse_query_str(invalid_content) do _
+            parseQueryString(invalid_content) do _
                 passes = true
             end
             @test passes
@@ -129,7 +129,7 @@
             )
             (assert (>= X1[0] 0.0))
             """
-            @test_throws ["\"error_count\": 1", "TypeMismatch", "net1"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "TypeMismatch", "net1"] parseQueryString(noop, invalid_content)
         end
     end
     @testset "Network Reference Errors" begin
@@ -143,7 +143,7 @@
             )
             (assert (>= X1[0] 0.0))
             """
-            @test_throws ["\"error_count\": 1", "Referenced network 'nonexistent' not found"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "Referenced network 'nonexistent' not found"] parseQueryString(noop, invalid_content)
         end
         @testset "test_forward_network_ref" begin
             invalid_content = """
@@ -159,7 +159,7 @@
             )
             (assert (>= X1[0] 0.0))
             """
-            @test_throws ["\"error_count\": 1", "Referenced network 'net2' not found"] parse_query_str(noop, invalid_content)
+            @test_throws ["\"error_count\": 1", "Referenced network 'net2' not found"] parseQueryString(noop, invalid_content)
         end
     end
 end
