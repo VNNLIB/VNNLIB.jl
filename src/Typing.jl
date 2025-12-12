@@ -129,7 +129,7 @@ function _specialize_node(::Type{T}, ::Type{TCompare}, node) where T
     if not_equal != C_NULL
         return not_equal
     end
-    return convert(T{TCompare}, node)
+    throw(ErrorException("Unknown TCompare derived type"))
 end
 
 function _specialize_node(::Type{T}, ::Type{TConnective}, node) where T
