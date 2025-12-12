@@ -12,6 +12,7 @@ on:
     branches:
       - dev
       - main
+      - debug/*
 concurrency:
   # cancel intermediate builds
   group: ${{ github.workflow }}-${{ github.ref }}

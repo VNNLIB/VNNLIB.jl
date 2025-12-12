@@ -14,9 +14,8 @@ module VNNLIBCore
 # is not garbage collected on their own).
 
 using CxxWrap
-using VNNLIB_jll
 
-@wrapmodule(() -> VNNLIB_jll.libVNNLibJulia)
+libpath() = joinpath(@__DIR__, "..", "build", "VNNLib_julia.so")
 
 function __init__()
     @initcxx
