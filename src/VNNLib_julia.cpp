@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 #include "VNNLib.h"
-#include "TypedAbsyn.h"
+#include "TypedAST.h"
 #include "LinearArithExpr.h"
 #include "DNFConverter.h"
 #include "CompatTransformer.h"
@@ -136,24 +136,31 @@ TDataType to_cpp_type_enum(JuliaDType jdt) {
     }
 }
 
+std::string jl_onnx_name(const std::string& name) {
+    if (name.size() >= 2 && name.front() == '"' && name.back() == '"') {
+        return name.substr(1, name.size() - 2);
+    }
+    return name;
+}
+
 // Return a shared_ptr<TQuery> by converting the unique_ptr returned by parse_query
 std::shared_ptr<TQuery> jl_parse_query(const std::string& path) {
-    return parse_query(path);
+    return parseQueryFile(path);
 }
 
 // parse_query_str: return shared_ptr<TQuery> by converting the unique_ptr
 std::shared_ptr<TQuery> jl_parse_query_str(const std::string& content) {
-    return parse_query_str(content);
+    return parseQueryString(content);
 }
 
 // check_query: returns result string
 std::string jl_check_query(const std::string& path) {
-    return check_query(path);
+    return checkQueryFile(path);
 }
 
 // check_query_str: returns result string
 std::string jl_check_query_str(const std::string& content) {
-    return check_query_str(content);
+    return checkQueryString(content);
 }
 
 std::vector<const TNode *> jl_children_sp(const TNode& node) {
@@ -358,18 +365,18 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
         })
         .method("onnx_name", [](const TVarExpr& var) {
             if (var.symbol) {
-                return var.symbol->onnxName;
+                return jl_onnx_name(var.symbol->onnxName);
             } else {
                 return std::string("");
             }
         })
         .method("onnx_name", [](const TVarExpr* var) {
             if (!var || !var->symbol) return std::string("");
-            return var->symbol->onnxName;
+            return jl_onnx_name(var->symbol->onnxName);
         })
         .method("onnx_name", [](const std::shared_ptr<TVarExpr>& var) {
             if (!var || !var->symbol) return std::string("");
-            return var->symbol->onnxName;
+            return jl_onnx_name(var->symbol->onnxName);
         })
         .method("dtype", [](const TVarExpr& var) {
             if (var.symbol) {
@@ -684,13 +691,13 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
             return def ? def->symbol->name : std::string("");
         })
         .method("onnx_name", [](const TInputDefinition& def) {
-            return def.symbol->onnxName;
+            return jl_onnx_name(def.symbol->onnxName);
         })
         .method("onnx_name", [](const TInputDefinition* def) {
-            return def ? def->symbol->onnxName : std::string("");
+            return def ? jl_onnx_name(def->symbol->onnxName) : std::string("");
         })
         .method("onnx_name", [](const std::shared_ptr<TInputDefinition>& def) {
-            return def ? def->symbol->onnxName : std::string("");
+            return def ? jl_onnx_name(def->symbol->onnxName) : std::string("");
         })
         .method("dtype", [](const TInputDefinition& def) {
             return to_julia_type_enum(def.symbol->dtype);
@@ -740,13 +747,13 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
             return def ? def->symbol->name : std::string("");
         })
         .method("onnx_name", [](const THiddenDefinition& def) {
-            return def.symbol->onnxName;
+            return jl_onnx_name(def.symbol->onnxName);
         })
         .method("onnx_name", [](const THiddenDefinition* def) {
-            return def ? def->symbol->onnxName : std::string("");
+            return def ? jl_onnx_name(def->symbol->onnxName) : std::string("");
         })
         .method("onnx_name", [](const std::shared_ptr<THiddenDefinition>& def) {
-            return def ? def->symbol->onnxName : std::string("");
+            return def ? jl_onnx_name(def->symbol->onnxName) : std::string("");
         })
         .method("dtype", [](const THiddenDefinition& def) {
             return to_julia_type_enum(def.symbol->dtype);
@@ -796,13 +803,13 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
             return def ? def->symbol->name : std::string("");
         })
         .method("onnx_name", [](const TOutputDefinition& def) {
-            return def.symbol->onnxName;
+            return jl_onnx_name(def.symbol->onnxName);
         })
         .method("onnx_name", [](const TOutputDefinition* def) {
-            return def ? def->symbol->onnxName : std::string("");
+            return def ? jl_onnx_name(def->symbol->onnxName) : std::string("");
         })
         .method("onnx_name", [](const std::shared_ptr<TOutputDefinition>& def) {
-            return def ? def->symbol->onnxName : std::string("");
+            return def ? jl_onnx_name(def->symbol->onnxName) : std::string("");
         })
         .method("dtype", [](const TOutputDefinition& def) {
             return to_julia_type_enum(def.symbol->dtype);

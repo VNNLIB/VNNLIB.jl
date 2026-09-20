@@ -4,8 +4,8 @@
         (vnnlib-version <2.0>)
 
         (declare-network acc
-        	(declare-input X Real [3])
-        	(declare-output Y Real [])
+            (declare-input X real [3])
+            (declare-output Y real [])
         )
 
         (assert (<= (* -1.0 X[0]) 0.0))
@@ -24,7 +24,7 @@
         
         parse_query_str(content) do (ast)
             # Test TQuery level
-            @test string(ast) == "(vnnlib-version <2.0>) (declare-network acc (declare-input X Real [3]) (declare-output Y Real [])) (assert (<= (* -1.0 X [0]) 0.0)) (assert (<= X [0] 50.0)) (assert (<= (* -1.0 X [1]) 50.0)) (assert (<= X [1] 50.0)) (assert (<= (* -1.0 X [2]) 0.0)) (assert (<= X [2] 150.0)) (assert (<= (+ (* -1.5 X [1]) X [2]) -15.0)) (assert (or (<= Y -3.0) (>= Y 0.0))) "
+            @test string(ast) == "(vnnlib-version <2.0>) (declare-network acc (declare-input X real [3]) (declare-output Y real [])) (assert (<= (* -1.0 X [0]) 0.0)) (assert (<= X [0] 50.0)) (assert (<= (* -1.0 X [1]) 50.0)) (assert (<= X [1] 50.0)) (assert (<= (* -1.0 X [2]) 0.0)) (assert (<= X [2] 150.0)) (assert (<= (+ (* -1.5 X [1]) X [2]) -15.0)) (assert (or (<= Y -3.0) (>= Y 0.0))) "
             
             children_list = VNNLIB.children(ast)
             @test length(children_list) == 9  # 1 network + 8 assertions
@@ -37,7 +37,7 @@
             
             # Test network definition
             net = networks[1]
-            @test string(net) == "(declare-network acc (declare-input X Real [3]) (declare-output Y Real [])) "
+            @test string(net) == "(declare-network acc (declare-input X real [3]) (declare-output Y real [])) "
             @test VNNLIB.net_isometric_to(net) == ""
             @test VNNLIB.net_equal_to(net) == ""
             
@@ -52,7 +52,7 @@
             
             # Test input definition
             input_def = inputs[1]
-            @test string(input_def) == "(declare-input X Real [3]) "
+            @test string(input_def) == "(declare-input X real [3]) "
             @test VNNLIB.dtype(input_def) == VNNLIB.DReal
             @test VNNLIB.name(input_def) == "X"
             @test VNNLIB.onnx_name(input_def) == ""
@@ -62,7 +62,7 @@
             
             # Test output definition
             output_def = outputs[1]
-            @test string(output_def) == "(declare-output Y Real []) "
+            @test string(output_def) == "(declare-output Y real []) "
             @test VNNLIB.dtype(output_def) == VNNLIB.DReal
             @test VNNLIB.name(output_def) == "Y"
             @test VNNLIB.onnx_name(output_def) == ""
@@ -144,8 +144,8 @@
         content = """
         (vnnlib-version <2.0>)
         (declare-network test
-            (declare-input X Real [3])
-            (declare-output Y Real [2])
+            (declare-input X real [3])
+            (declare-output Y real [2])
         )
         (assert (<= (+ X[0] X[1]) 10.0))
         (assert (<= (- X[1] X[2]) 5.0))
@@ -194,8 +194,8 @@
         content = """
         (vnnlib-version <2.0>)
         (declare-network test
-            (declare-input X Real [2])
-            (declare-output Y Real [2])
+            (declare-input X real [2])
+            (declare-output Y real [2])
         )
         (assert (< X[0] 10.0))
         (assert (<= X[0] 20.0))
@@ -250,8 +250,8 @@
         content = """
         (vnnlib-version <2.0>)
         (declare-network test
-            (declare-input X Real [2])
-            (declare-output Y Real [])
+            (declare-input X real [2])
+            (declare-output Y real [])
         )
         (assert (and (<= X[0] 10.0) (>= X[1] 5.0) (<= Y 3.0)))
         """
@@ -274,10 +274,10 @@
         content = """
         (vnnlib-version <2.0>)
         (declare-network test
-            (declare-input X Real [2])
-            (declare-hidden H1 Real [3] "hidden_layer_1")
-            (declare-hidden H2 Real [4] "hidden_layer_2")
-            (declare-output Y Real [1])
+            (declare-input X real [2])
+            (declare-hidden H1 real [3] "hidden_layer_1")
+            (declare-hidden H2 real [4] "hidden_layer_2")
+            (declare-output Y real [1])
         )
         (assert (<= X[0] 10.0))
         """
@@ -292,7 +292,7 @@
             
             # Test first hidden variable: H1 with ONNX name
             h1 = hidden[1]
-            @test string(h1) == "(declare-hidden H1 Real [3] \"hidden_layer_1\") "
+            @test string(h1) == "(declare-hidden H1 real [3] \"hidden_layer_1\") "
             @test VNNLIB.dtype(h1) == VNNLIB.DReal
             @test VNNLIB.name(h1) == "H1"
             @test VNNLIB.onnx_name(h1) == "hidden_layer_1"
@@ -302,7 +302,7 @@
             
             # Test second hidden variable: H2 without ONNX name
             h2 = hidden[2]
-            @test string(h2) == "(declare-hidden H2 Real [4] \"hidden_layer_2\") "
+            @test string(h2) == "(declare-hidden H2 real [4] \"hidden_layer_2\") "
             @test VNNLIB.dtype(h2) == VNNLIB.DReal
             @test VNNLIB.name(h2) == "H2"
             @test VNNLIB.onnx_name(h2) == "hidden_layer_2"
@@ -316,8 +316,8 @@
         content = """
         (vnnlib-version <2.0>)
         (declare-network test
-            (declare-input X Real [2, 3])
-            (declare-output Y Real [])
+            (declare-input X real [2, 3])
+            (declare-output Y real [])
         )
         (assert (<= X[1, 2] 10.0))
         (assert (>= Y 5.0))
@@ -350,8 +350,8 @@
         content = """
         (vnnlib-version <2.0>)
         (declare-network test
-            (declare-input X Real [1])
-            (declare-output Y Real [])
+            (declare-input X real [1])
+            (declare-output Y real [])
         )
         (assert (<= X[0] 42.5))
         (assert (>= Y -3.14159))

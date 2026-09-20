@@ -100,8 +100,8 @@ parse_query_str(walk, """
 (vnnlib-version <2.0>)
 
 (declare-network acc
-	(declare-input X Real [3])
-	(declare-output Y Real [])
+	(declare-input X real [3])
+	(declare-output Y real [])
 )
 
 (assert (<= (* -1.0 X[0]) 0.0))

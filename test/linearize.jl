@@ -29,8 +29,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= X[0] 10.0))
             """
@@ -44,8 +44,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= 5.0 10.0))
             """
@@ -59,8 +59,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (+ X[0] 5.0) 10.0))
             """
@@ -74,8 +74,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (- X[0] 5.0) 0.0))
             """
@@ -89,8 +89,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (- 5.0 X[0]) 0.0))
             """
@@ -104,8 +104,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (* X[0] 3.5) 7.0))
             """
@@ -119,8 +119,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (* -2.0 X[0]) 0.0))
             """
@@ -134,8 +134,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (- X[0]) 0.0))
             """
@@ -149,8 +149,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (* -5.0 X[0]) 0.0))
             """
@@ -166,8 +166,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [2])
-                (declare-output Y Real [1])
+                (declare-input X real [2])
+                (declare-output Y real [1])
             )
             (assert (<= (+ X[0] 5.0 X[0]) 10.0))
             """
@@ -181,8 +181,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (- X[0] X[0]) 0.0))
             """
@@ -196,8 +196,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [3])
-                (declare-output Y Real [1])
+                (declare-input X real [3])
+                (declare-output Y real [1])
             )
             (assert (<= (+ (- X[0] X[1]) 3.0) 0.0))
             """
@@ -211,8 +211,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [3])
-                (declare-output Y Real [1])
+                (declare-input X real [3])
+                (declare-output Y real [1])
             )
             (assert (<= (- X[0] X[1] X[2]) 0.0))
             """
@@ -228,8 +228,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [2])
-                (declare-output Y Real [1])
+                (declare-input X real [2])
+                (declare-output Y real [1])
             )
             (assert (<= (+ 5.0 (* -1.0 X[0]) (- X[1])) 0.0))
             """
@@ -243,8 +243,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (+ (* 2.0 (* X[0] 3.0)) 2.0) 20.0))
             """
@@ -260,8 +260,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (* X[0] 0.0) 0.0))
             """
@@ -275,8 +275,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (* X[0] 1.0) 10.0))
             """
@@ -290,8 +290,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (+ X[0] 0.0) 5.0))
             """
@@ -307,8 +307,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (* 2.0 3.0 2.5) 20.0))
             """
@@ -322,8 +322,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (+ 1.0 2.0 5.0) 10.0))
             """
@@ -339,8 +339,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (* 0.0001 X[0]) 0.1))
             """
@@ -354,8 +354,8 @@ end
             content = """
             (vnnlib-version <2.0>)
             (declare-network test
-                (declare-input X Real [1])
-                (declare-output Y Real [1])
+                (declare-input X real [1])
+                (declare-output Y real [1])
             )
             (assert (<= (* 1000000.0 X[0]) 1000.0))
             """
@@ -370,8 +370,8 @@ end
         content = """
         (vnnlib-version <2.0>)
         (declare-network test
-            (declare-input X Real [2])
-            (declare-output Y Real [1])
+            (declare-input X real [2])
+            (declare-output Y real [1])
         )
         (assert (<= (* X[0] (+ X[1] 2.0)) 25.0))
         """

@@ -3,9 +3,9 @@
         invalid_content = """
         (vnnlib-version <2.0>)
         (declare-network acc
-            (declare-input X Real [3])
-            (declare-input X Real [3]) ; Duplicate
-            (declare-output Y Real [1])
+            (declare-input X real [3])
+            (declare-input X real [3]) ; Duplicate
+            (declare-output Y real [1])
         )
         (assert (or 
             (<= Y[0] -3.0)
@@ -18,8 +18,8 @@
         invalid_content = """
         (vnnlib-version <2.0>)
         (declare-network acc
-            (declare-input X Real [3])
-            (declare-output Y Real [1])
+            (declare-input X real [3])
+            (declare-output Y real [1])
         )
         (assert (or 
             (<= Z[0] -3.0) ; Z is undeclared
@@ -32,8 +32,8 @@
         invalid_content = """
         (vnnlib-version <2.0>)
         (declare-network acc
-            (declare-input X Real [0, 0])   ; invalid dimensions
-            (declare-output Y Real [])
+            (declare-input X real [0, 0])   ; invalid dimensions
+            (declare-output Y real [])
         )
         (assert (or 
             (<= X[10, 10] -3.0) ; out of bounds access
@@ -47,8 +47,8 @@
             invalid_content = """
             (vnnlib-version <2.0>)
             (declare-network acc
-                (declare-input X Real [3, 4])   ; X is a 3x4 matrix
-                (declare-output Y Real [])
+                (declare-input X real [3, 4])   ; X is a 3x4 matrix
+                (declare-output Y real [])
             )
             (assert (or 
                 (<= X[4, 4] -3.0) ; out of bounds access
@@ -61,8 +61,8 @@
             invalid_content = """
             (vnnlib-version <2.0>)
             (declare-network acc
-                (declare-input X Real [3, 4])   ; X is a 3x4 matrix
-                (declare-output Y Real [])
+                (declare-input X real [3, 4])   ; X is a 3x4 matrix
+                (declare-output Y real [])
             )
             (assert (or 
                 (<= X[1, 2, 3] -3.0) ; too many indices
@@ -75,8 +75,8 @@
             invalid_content = """
             (vnnlib-version <2.0>)
             (declare-network acc
-                (declare-input X Real [3, 4])   ; X is a 3x4 matrix
-                (declare-output Y Real [])
+                (declare-input X real [3, 4])   ; X is a 3x4 matrix
+                (declare-output Y real [])
             )
             (assert (or 
                 (<= X[1] -3.0) ; not enough indices
@@ -91,9 +91,9 @@
             content = """
             (vnnlib-version <2.0>)
             (declare-network acc
-                (declare-input X Real [])          
-                (declare-hidden Z Real [] "hidden1")          
-                (declare-output Y Real [])          
+                (declare-input X real [])
+                (declare-hidden Z real [] "hidden1")
+                (declare-output Y real [])
             )
             (assert (>= Y 0.0))
             """
@@ -107,9 +107,9 @@
             content = """
             (vnnlib-version <2.0>)
             (declare-network acc
-                (declare-input X Real [])           
-                (declare-input Z Real [])          
-                (declare-output Y Real [])          
+                (declare-input X real [])
+                (declare-input Z real [])
+                (declare-output Y real [])
             )
             (assert (>= Y 0.0))
             """

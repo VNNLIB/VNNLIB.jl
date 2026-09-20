@@ -29,7 +29,7 @@ function clone_repo(repo_url::String, dest_dir::String)
         println("Cloning repository from $repo_url to $dest_dir")
         run(`git clone $repo_url $dest_dir`)
         cd(dest_dir) do
-            run(`git checkout 4cb3273a8a9746324250c3e41e065bdbe2647e51`)
+            run(`git checkout 49f4666dcb21085657793a6188ed93297ea56567`)
             run(`git submodule update --init --recursive`)
         end
     end
