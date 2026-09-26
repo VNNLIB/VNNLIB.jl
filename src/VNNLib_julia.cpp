@@ -8,6 +8,7 @@
 #include "LinearArithExpr.h"
 #include "DNFConverter.h"
 #include "CompatTransformer.h"
+#include "Solver.h"
 /*
 CxxWrap currently does not support class enums directly,
 so we provide a "classical" enum with conversion functions.
@@ -49,6 +50,109 @@ enum JuliaSymbolKind {
     SKNetwork,
     SKUnknown
 };
+
+
+enum JuliaVerificationResult {
+    VRSat,
+    VRUnsat,
+    VRUnknown,
+    VRTimedOut
+};
+
+enum JuliaHiddenNodeTheory {
+    JHiddenNH,
+    JHiddenH
+};
+
+enum JuliaMultipleInputOutputTheory {
+    JInputOutputSIO,
+    JInputOutputMIO
+};
+
+enum JuliaMultipleNetworkTheory {
+    JNetworkSNET,
+    JNetworkMENET,
+    JNetworkMINET,
+    JNetworkMNET
+};
+
+enum JuliaMultipleNodeComparisonTheory {
+    JNodeComparisonSNC,
+    JNodeComparisonMNC
+};
+
+enum JuliaArithmeticComplexityTheory {
+    JArithmeticBND,
+    JArithmeticOUTC,
+    JArithmeticLIN,
+    JArithmeticPOLY
+};
+
+JuliaVerificationResult to_julia_verification_result(
+    vnnlib::solver::VerificationResult result
+) {
+    switch (result) {
+        case vnnlib::solver::VerificationResult::Sat: return VRSat;
+        case vnnlib::solver::VerificationResult::Unsat: return VRUnsat;
+        case vnnlib::solver::VerificationResult::Unknown: return VRUnknown;
+        case vnnlib::solver::VerificationResult::TimedOut: return VRTimedOut;
+        default: return VRUnknown;
+    }
+}
+
+JuliaHiddenNodeTheory to_julia_hidden_node_theory(
+    vnnlib::solver::HiddenNodeTheory theory
+) {
+    switch (theory) {
+        case vnnlib::solver::HiddenNodeTheory::NH: return JHiddenNH;
+        case vnnlib::solver::HiddenNodeTheory::H: return JHiddenH;
+        default: return JHiddenNH;
+    }
+}
+
+JuliaMultipleInputOutputTheory to_julia_input_output_theory(
+    vnnlib::solver::MultipleInputOutputTheory theory
+) {
+    switch (theory) {
+        case vnnlib::solver::MultipleInputOutputTheory::SIO: return JInputOutputSIO;
+        case vnnlib::solver::MultipleInputOutputTheory::MIO: return JInputOutputMIO;
+        default: return JInputOutputSIO;
+    }
+}
+
+JuliaMultipleNetworkTheory to_julia_network_theory(
+    vnnlib::solver::MultipleNetworkTheory theory
+) {
+    switch (theory) {
+        case vnnlib::solver::MultipleNetworkTheory::SNET: return JNetworkSNET;
+        case vnnlib::solver::MultipleNetworkTheory::MENET: return JNetworkMENET;
+        case vnnlib::solver::MultipleNetworkTheory::MINET: return JNetworkMINET;
+        case vnnlib::solver::MultipleNetworkTheory::MNET: return JNetworkMNET;
+        default: return JNetworkSNET;
+    }
+}
+
+JuliaMultipleNodeComparisonTheory to_julia_node_comparison_theory(
+    vnnlib::solver::MultipleNodeComparisonTheory theory
+) {
+    switch (theory) {
+        case vnnlib::solver::MultipleNodeComparisonTheory::SNC: return JNodeComparisonSNC;
+        case vnnlib::solver::MultipleNodeComparisonTheory::MNC: return JNodeComparisonMNC;
+        default: return JNodeComparisonSNC;
+    }
+}
+
+JuliaArithmeticComplexityTheory to_julia_arithmetic_theory(
+    vnnlib::solver::ArithmeticComplexityTheory theory
+) {
+    switch (theory) {
+        case vnnlib::solver::ArithmeticComplexityTheory::BND: return JArithmeticBND;
+        case vnnlib::solver::ArithmeticComplexityTheory::OUTC: return JArithmeticOUTC;
+        case vnnlib::solver::ArithmeticComplexityTheory::LIN: return JArithmeticLIN;
+        case vnnlib::solver::ArithmeticComplexityTheory::POLY: return JArithmeticPOLY;
+        default: return JArithmeticBND;
+    }
+}
 
 JuliaSymbolKind to_julia_symbol_kind(SymbolKind sk) {
     switch (sk) {
@@ -177,6 +281,7 @@ std::vector<const TNode *> jl_children_ptr_sp(const TNode* node) {
 
 // Register super types for inheritance
 namespace jlcxx {
+    template<> struct IsMirroredType<vnnlib::solver::OpsetRange> : std::false_type {};
     template<> struct SuperType<TElementType> { typedef TNode type; };
 
     // --- Arithmetic Expressions ---
@@ -238,6 +343,193 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& mod) {
     mod.add_enum<JuliaSymbolKind>("SymbolKind",
     std::vector<const char*>({"Input","Hidden","Output","Network","Unknown"}),
     std::vector<int>({SKInput,SKHidden,SKOutput,SKNetwork,SKUnknown}));
+
+    mod.add_enum<JuliaVerificationResult>("VerificationResult",
+    std::vector<const char*>({"SolverSat","SolverUnsat","SolverUnknown","SolverTimedOut"}),
+    std::vector<int>({VRSat,VRUnsat,VRUnknown,VRTimedOut}));
+
+    mod.add_enum<JuliaHiddenNodeTheory>("HiddenNodeTheory",
+    std::vector<const char*>({"HiddenNH","HiddenH"}),
+    std::vector<int>({JHiddenNH,JHiddenH}));
+
+    mod.add_enum<JuliaMultipleInputOutputTheory>("MultipleInputOutputTheory",
+    std::vector<const char*>({"InputOutputSIO","InputOutputMIO"}),
+    std::vector<int>({JInputOutputSIO,JInputOutputMIO}));
+
+    mod.add_enum<JuliaMultipleNetworkTheory>("MultipleNetworkTheory",
+    std::vector<const char*>({"NetworkSNET","NetworkMENET","NetworkMINET","NetworkMNET"}),
+    std::vector<int>({JNetworkSNET,JNetworkMENET,JNetworkMINET,JNetworkMNET}));
+
+    mod.add_enum<JuliaMultipleNodeComparisonTheory>("MultipleNodeComparisonTheory",
+    std::vector<const char*>({"NodeComparisonSNC","NodeComparisonMNC"}),
+    std::vector<int>({JNodeComparisonSNC,JNodeComparisonMNC}));
+
+    mod.add_enum<JuliaArithmeticComplexityTheory>("ArithmeticComplexityTheory",
+    std::vector<const char*>({"ArithmeticBND","ArithmeticOUTC","ArithmeticLIN","ArithmeticPOLY"}),
+    std::vector<int>({JArithmeticBND,JArithmeticOUTC,JArithmeticLIN,JArithmeticPOLY}));
+
+
+    mod.add_type<vnnlib::solver::SemanticVersion>("SemanticVersion")
+        .method("major", [](const vnnlib::solver::SemanticVersion& version) {
+            return version.major;
+        })
+        .method("minor", [](const vnnlib::solver::SemanticVersion& version) {
+            return version.minor;
+        })
+        .method("has_patch", [](const vnnlib::solver::SemanticVersion& version) {
+            return version.patch.has_value();
+        })
+        .method("patch_value", [](const vnnlib::solver::SemanticVersion& version) {
+            return version.patch.value();
+        })
+        .method("extra", [](const vnnlib::solver::SemanticVersion& version) {
+            return version.extra;
+        });
+
+    mod.add_type<vnnlib::solver::VersionRange>("VersionRange")
+        .method("minimum_version", [](const vnnlib::solver::VersionRange& range) {
+            return range.minimum;
+        })
+        .method("maximum_version", [](const vnnlib::solver::VersionRange& range) {
+            return range.maximum;
+        });
+
+    mod.add_type<vnnlib::solver::OpsetRange>("OpsetRange")
+        .method("minimum_opset", [](const vnnlib::solver::OpsetRange& range) {
+            return range.minimum;
+        })
+        .method("maximum_opset", [](const vnnlib::solver::OpsetRange& range) {
+            return range.maximum;
+        });
+
+    mod.add_type<vnnlib::solver::OperatorSupport>("OperatorSupport")
+        .method("operator_name", [](const vnnlib::solver::OperatorSupport& support) {
+            return support.name;
+        })
+        .method("element_types", [](const vnnlib::solver::OperatorSupport& support) {
+            std::vector<JuliaDType> result;
+            result.reserve(support.elementTypes.size());
+
+            for (const auto type : support.elementTypes) {
+                result.push_back(to_julia_type_enum(type));
+            }
+
+            return result;
+        });
+
+
+    mod.add_type<vnnlib::solver::Solver>("Solver")
+        .constructor<const std::string&>()
+        .method("verify_no_timeout", [](
+            vnnlib::solver::Solver& solver,
+            const std::string& query,
+            const std::vector<std::string>& network_names,
+            const std::vector<std::string>& network_paths
+        ) {
+            if (network_names.size() != network_paths.size()) {
+                throw std::runtime_error("network names and paths must have the same length");
+            }
+
+            std::unordered_map<std::string, std::string> networks;
+
+            for (size_t i = 0; i < network_names.size(); ++i) {
+                networks[network_names[i]] = network_paths[i];
+            }
+
+            return to_julia_verification_result(
+                solver.verify(query, networks)
+            );
+        })
+        .method("verify_with_timeout", [](
+            vnnlib::solver::Solver& solver,
+            const std::string& query,
+            const std::vector<std::string>& network_names,
+            const std::vector<std::string>& network_paths,
+            int timeout
+        ) {
+            if (network_names.size() != network_paths.size()) {
+                throw std::runtime_error("network names and paths must have the same length");
+            }
+
+            std::unordered_map<std::string, std::string> networks;
+
+            for (size_t i = 0; i < network_names.size(); ++i) {
+                networks[network_names[i]] = network_paths[i];
+            }
+
+            return to_julia_verification_result(
+                solver.verify(query, networks, timeout)
+            );
+        })
+        .method("supports_onnx_opset_versions", [](vnnlib::solver::Solver& solver) {
+            return solver.supportsOnnxOpsetVersions();
+        })
+        .method("supports_onnx_element_types", [](vnnlib::solver::Solver& solver) {
+            std::vector<JuliaDType> result;
+
+            for (const auto type : solver.supportsOnnxElementTypes()) {
+                result.push_back(to_julia_type_enum(type));
+            }
+
+            return result;
+        })
+        .method("supports_onnx_operators", [](vnnlib::solver::Solver& solver) {
+            return solver.supportsOnnxOperators();
+        })
+        .method("supports_vnnlib_versions", [](vnnlib::solver::Solver& solver) {
+            return solver.supportsVNNLibVersions();
+        })
+        .method("supports_hidden_node_theories", [](vnnlib::solver::Solver& solver) {
+            std::vector<JuliaHiddenNodeTheory> result;
+
+            for (const auto theory : solver.supportsHiddenNodeTheories()) {
+                result.push_back(to_julia_hidden_node_theory(theory));
+            }
+
+            return result;
+        })
+        .method("supports_multiple_input_output_theories", [](vnnlib::solver::Solver& solver) {
+            std::vector<JuliaMultipleInputOutputTheory> result;
+
+            for (const auto theory : solver.supportsMultipleInputOutputTheories()) {
+                result.push_back(to_julia_input_output_theory(theory));
+            }
+
+            return result;
+        })
+        .method("supports_multiple_network_theories", [](vnnlib::solver::Solver& solver) {
+            std::vector<JuliaMultipleNetworkTheory> result;
+
+            for (const auto theory : solver.supportsMultipleNetworkTheories()) {
+                result.push_back(to_julia_network_theory(theory));
+            }
+
+            return result;
+        })
+        .method("supports_multiple_node_comparison_theories", [](vnnlib::solver::Solver& solver) {
+            std::vector<JuliaMultipleNodeComparisonTheory> result;
+
+            for (const auto theory : solver.supportsMultipleNodeComparisonTheories()) {
+                result.push_back(to_julia_node_comparison_theory(theory));
+            }
+
+            return result;
+        })
+        .method("supports_arithmetic_complexity_theories", [](vnnlib::solver::Solver& solver) {
+            std::vector<JuliaArithmeticComplexityTheory> result;
+
+            for (const auto theory : solver.supportsArithmeticComplexityTheories()) {
+                result.push_back(to_julia_arithmetic_theory(theory));
+            }
+
+            return result;
+        })
+        .method("supports_optimised_disjunctive_reasoning", [](vnnlib::solver::Solver& solver) {
+            return solver.supportsOptimisedDisjunctiveReasoning();
+        })
+        .method("supports_serialise_assignments", [](vnnlib::solver::Solver& solver) {
+            return solver.supportsSerialiseAssignments();
+        });
 
     auto linarithexprterm_type = mod.add_type<LinearArithExpr::Term>("LinearArithExprTerm")
         .method("coeff", [](const LinearArithExpr::Term& t) {

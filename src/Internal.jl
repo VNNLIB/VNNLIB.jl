@@ -75,6 +75,32 @@ export SpecCase, input_box, output_constraints
 
 export transform_to_compat
 
+export Solver
+export VerificationResult, SolverSat, SolverUnsat, SolverUnknown, SolverTimedOut
+
+export HiddenNodeTheory, HiddenNH, HiddenH
+export MultipleInputOutputTheory, InputOutputSIO, InputOutputMIO
+export MultipleNetworkTheory, NetworkSNET, NetworkMENET, NetworkMINET, NetworkMNET
+export MultipleNodeComparisonTheory, NodeComparisonSNC, NodeComparisonMNC
+export ArithmeticComplexityTheory, ArithmeticBND, ArithmeticOUTC, ArithmeticLIN, ArithmeticPOLY
+
+export SemanticVersion, major, minor, extra
+export VersionRange, minimum_version, maximum_version
+export OpsetRange, minimum_opset, maximum_opset
+export OperatorSupport, operator_name, element_types
+
+export supports_onnx_opset_versions
+export supports_onnx_element_types
+export supports_onnx_operators
+export supports_vnnlib_versions
+export supports_hidden_node_theories
+export supports_multiple_input_output_theories
+export supports_multiple_network_theories
+export supports_multiple_node_comparison_theories
+export supports_arithmetic_complexity_theories
+export supports_optimised_disjunctive_reasoning
+export supports_serialise_assignments
+
 export DReal,DF16,DF32,DF64,DBF16,DF8E4M3FN,DF8E5M2,DF8E4M3FNUZ,DF8E5M2FNUZ,DF4E2M1,DI8,DI16,DI32,DI64,DU8,DU16,DU32,DU64,DC64,DC128,DBool,DString,DUnknown,DFloatConstant,DNegativeIntConstant,DPositiveIntConstant
 export Input,Output,Hidden,Network
 

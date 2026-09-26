@@ -61,6 +61,32 @@ export SpecCase, input_box, output_constraints
 
 export transform_to_compat
 
+export Solver, verify
+export VerificationResult, SolverSat, SolverUnsat, SolverUnknown, SolverTimedOut
+
+export HiddenNodeTheory, HiddenNH, HiddenH
+export MultipleInputOutputTheory, InputOutputSIO, InputOutputMIO
+export MultipleNetworkTheory, NetworkSNET, NetworkMENET, NetworkMINET, NetworkMNET
+export MultipleNodeComparisonTheory, NodeComparisonSNC, NodeComparisonMNC
+export ArithmeticComplexityTheory, ArithmeticBND, ArithmeticOUTC, ArithmeticLIN, ArithmeticPOLY
+
+export SemanticVersion, major, minor, patch, extra
+export VersionRange, minimum_version, maximum_version
+export OpsetRange, minimum_opset, maximum_opset
+export OperatorSupport, operator_name, element_types
+
+export supports_onnx_opset_versions
+export supports_onnx_element_types
+export supports_onnx_operators
+export supports_vnnlib_versions
+export supports_hidden_node_theories
+export supports_multiple_input_output_theories
+export supports_multiple_network_theories
+export supports_multiple_node_comparison_theories
+export supports_arithmetic_complexity_theories
+export supports_optimised_disjunctive_reasoning
+export supports_serialise_assignments
+
 include("Util.jl")
 
 include("Typing.jl")
@@ -125,5 +151,48 @@ end
 CxxWrap.@cxxdereference function to_dnf(expr::TBoolExpr) :: Vector{Vector{Union{CxxWrap.ConstCxxPtr{TGreaterThan},CxxWrap.ConstCxxPtr{TLessThan},CxxWrap.ConstCxxPtr{TGreaterEqual},CxxWrap.ConstCxxPtr{TLessEqual},CxxWrap.ConstCxxPtr{TEqual},CxxWrap.ConstCxxPtr{TNotEqual}}}}
     return map(x->specialize_node.(x), VNNLIBCore.to_dnf(expr))
 end
+
+
+function verify(
+    solver::Solver,
+    query::AbstractString,
+    networks::AbstractDict{<:AbstractString,<:AbstractString},
+    timeout::Union{Nothing,Integer}=nothing
+)
+    network_names = String[]
+    network_paths = String[]
+
+    for (name, path) in networks
+        push!(network_names, String(name))
+        push!(network_paths, String(path))
+    end
+
+    if isnothing(timeout)
+        return VNNLIBCore.verify_no_timeout(
+            solver,
+            String(query),
+            network_names,
+            network_paths
+        )
+    end
+
+    return VNNLIBCore.verify_with_timeout(
+        solver,
+        String(query),
+        network_names,
+        network_paths,
+        Int(timeout)
+    )
+end
+
+
+function patch(version::SemanticVersion)
+    if VNNLIBCore.has_patch(version)
+        return VNNLIBCore.patch_value(version)
+    end
+
+    return nothing
+end
+
 
 end # module
