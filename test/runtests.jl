@@ -12,3 +12,7 @@ include("dnf.jl")
 include("congruence.jl")
 include("compat.jl")
 include("api.jl")
+
+if haskey(ENV, "VNNLIB_TEST_SOLVER")
+    include("solver.jl")
+end

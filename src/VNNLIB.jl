@@ -159,12 +159,12 @@ function verify(
     networks::AbstractDict{<:AbstractString,<:AbstractString},
     timeout::Union{Nothing,Integer}=nothing
 )
-    network_names = String[]
-    network_paths = String[]
+    network_names = CxxWrap.StdLib.StdVector{CxxWrap.StdLib.StdString}()
+    network_paths = CxxWrap.StdLib.StdVector{CxxWrap.StdLib.StdString}()
 
     for (name, path) in networks
-        push!(network_names, String(name))
-        push!(network_paths, String(path))
+        push!(network_names, CxxWrap.StdLib.StdString(String(name)))
+        push!(network_paths, CxxWrap.StdLib.StdString(String(path)))
     end
 
     if isnothing(timeout)
